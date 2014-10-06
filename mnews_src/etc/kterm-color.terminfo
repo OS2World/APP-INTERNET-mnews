@@ -1,0 +1,2 @@
+kterm-color|kterm with color support,
+	colors#8, setab=\E[4%p1%dm, setaf=\E[3%p1%dm, use=kterm,

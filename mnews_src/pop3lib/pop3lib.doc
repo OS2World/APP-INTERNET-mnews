@@ -1,0 +1,74 @@
+
+POP3LIB(3)		C LIBRARY FUNCTIONS			POP3LIB(3)
+
+名前
+	pop3lib		POP3 ライブラリ
+
+形式
+	#include	"pop3lib.h"
+
+	POP3_ERR_CODE	pop3_select_server(char *server_name)
+	POP3_ERR_CODE	pop3_open(void)
+	POP3_ERR_CODE	pop3_close(void)
+	POP3_ERR_CODE	pop3_send(char *string)
+	POP3_ERR_CODE	pop3_receive(char *ptr, int size)
+	POP3_ERR_CODE	pop3_read(char *ptr, int size, POP3_RD_STAT *stat_ptr)
+	POP3_ERR_CODE	pop3_stat(void)
+	POP3_ERR_CODE	pop3_delete(void)
+	POP3_ERR_CODE	pop3_noop(void)
+
+機能説明
+	pop3lib は POP3 通信処理ルーチンを集めたライブラリです。
+	pop3lib は MSPL (メールスプール参照)と POP3 (TCP/IP 通信)による
+	メールの受信の両方を同じインタフェースで提供しています。これらは
+	グローバル変数 pop3_connect_mode (0:MSPL,1:POP3)で切替えます。
+
+	pop3_select_server 関数はマシン名 server_name のマシンに POP3
+	サーバを切替えます。MSPL モードの場合はスプールディレクトリが存在
+	するかチェックのみします。
+	pop3_open 関数は POP3 サーバと接続します。MSPL モードの場合は何も
+	しません。
+	pop3_close 関数は POP3 サーバとの接続を切断します。MSPL モードの
+	場合は何もしません。
+	pop3_send 関数は POP3 サーバに文字列 string を送信します。MSPL モード
+	の場合はエラーとなります。
+	pop3_receive 関数は POP3 サーバからの応答を受信バッファ ptr に
+	最大サイズ size まで受信します。MSPL モードの場合はエラーとなります。
+	pop3_read 関数は POP3 サーバからメール記事を 1 行分参照し、結果を
+	文字列格納領域 ptr に最大サイズ size まで取得します。その際に取得
+	できたリードレスポンスを状態格納領域 stat_ptr に格納します。
+	MSPL モードの場合はスプールから 1 行分参照します。
+	リードレスポンス
+
+		POP3_RD_FROM	UNIX-From を検出
+		POP3_RD_HEAD	ヘッダを検出
+		POP3_RD_SEP	セパレータを検出
+		POP3_RD_BODY	本文を検出
+		POP3_RD_END	本文を最後を検出
+		POP3_RD_EOF	全記事の最後を検出
+
+	pop3_stat 関数は POP3 サーバと接続し、メールがあるかチェックした後に
+	接続を切断します。MSPL モードの場合はスプールファイルが存在するか
+	(サイズ 1 以上か)チェックします。
+	pop3_delete 関数は POP3 サーバの全メールを削除します。MSPL モードの
+	場合はメールスプールを削除(サイズを 0 に)します。
+	pop3_noop 関数は POP3 サーバとの接続をチェックします。MSPL モードの
+	場合は何もしません。
+
+戻り値
+	pop3lib の全ての関数は POP3_ERR_CODE 型のエラーコードを返します。
+
+	POP3_OK			正常終了
+	POP3_ERR_RSV		未サポート
+	POP3_ERR_BUSY		過負荷状態
+	POP3_ERR_COMM		低レベル通信エラー
+	POP3_ERR_PROT		プロトコルエラー
+	POP3_ERR_AUTH		認証エラー
+	POP3_ERR_PROG		プログラムエラー
+	POP3_ERR_MEM		メモリ不足エラー
+	POP3_ERR_FILE		ファイルエラー
+	POP3_ERR_NONE		未存在エラー
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

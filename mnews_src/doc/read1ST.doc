@@ -1,0 +1,93 @@
+
+	mnews		ミニ・ニュースリーダ (Ver 1.21 用)
+
+概要
+	mnews は電子ニュース/電子メールを読むための小型のニュースリーダで
+	す。
+
+動作環境
+	サポートしている機種(OS)は以下の通りです。
+
+	SUN(OS 3.3以上, OS 5.X), DECstation(ULTRIX 4.X),
+	NEWS(OS 4.X以上), NeXT(NeXT STEP 2.X/3.X),
+	PC-AT(386BSD, NetBSD, FreeBSD, Linux, UNIX System V/386),
+	RS-6000(AIX 3.X), EWS4800(EWS UX/V Rel4.2), UP4800(UP-UX/V Rel4.X),
+	LUNA(UNIOS-B 1.X,2.X/3.X, MACH 2.X), (OKIstation7300),
+	HP(UP-UX 8.X以上), DEC ALPHA-AXP(OSF/1 V1.3,V2.X,V3.X),
+	SGI(IRIX 4.X/5.X/6.X), MIPS(RISC/OS 4.5X), SUMISTATION,
+	MS-DOS(MS-C 6.0以上/Turbo-C++ 2.0/Borland-C++ 5.0J)(βレベル),
+	Windows 95+Winsock,PC-9801(PANIX 3.X),X680x0(Human 2.X以上+
+	gcc 1.17/1.2X+libc 1.1.29Fix-B/1.1.32),OS/2(EMX 0.9c)
+
+	その他の機種の方は一番近いマシンに合わせてみて下さい。
+	動作確認は ソルボーンシリーズ 5, S4000, SPARC station 2/20,
+	Panasonic P2100/P2200 上の(SUN-OS 4.X/5.X), X68000, AT 互換機上の
+	MS-DOS/Windows 95 及び FreeBSD で行なっていますが、不十分かも知れ
+	ません。
+
+注意事項
+	このソフトは正常に動作すべく開発されていますが、全くの無保証です。
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	従ってこのソフトを使用したことにより何らかの(例えばメールが消失し
+	た/出したはずの記事が届いていないなど)損失が発生しても作者は責任
+	を持ちません。(バグレポートやパッチは大歓迎です。)
+	使用は各自の責任において行なって下さい。
+
+	MS-DOS,OS/2,X680x0 版はファイル名の制限から説明中のファイル名は以下
+	のように読み変えて下さい。
+	ただし、コンパイル時に -DUSE_LONG_FNAME をつけた場合は UNIX 版と
+	同じファイル名が用いられます。
+
+	UNIX 版		MS-DOS,OS/2 版	X680x0 版
+	.newsrc		_newsrc		_newsrc
+	.mnews_setup	_mnews.sup	_mnews_setup
+	.signature	_sign		_signature
+	.message	_message	_message
+	.mh_profile	_mh_prof	_mh_profile
+	.mh_sequences	_mh_sequ	_mh_sequences
+	.mailrc		_mailrc		_mailrc
+	.newsauth	_newsaut	_newsauth
+	.mnews_boardrc	_boardrc	_boardrc
+	dead.letter	deadmail	deadmail
+	mnews_setup	mnews.sup	mnews_setup
+	default-domain	domain.def	domain.def
+	default-server	server.def	server.def
+	default-smtpsv	smtpsv.def	smtpsv.def
+	default-pop3sv	pop3sv.def	pop3sv.def
+	default-mailsv	mailsv.def	mailsv.def
+	organization	organ.def	organ.def
+
+著作権
+	jnames.c は System-V でのコンパイルエラー回避のために一部改変した
+	以外はオリジナルのままです。著作権は原作者(實藤@ソニーさん?)にあり
+	ます。差出人の jnames ドメイン名の決定は vin の Kanjiname kit(大西
+	@松下電器さん)のものを参考にさせて頂いています。
+	jnames.c と等価な働きをする jnhash.c は私が記述したコードです。
+	inetbios.h, inetbios.c の著作権は原作者の沢田@ムライ電気さんにあり
+	無変更で MS-DOS 版に限って使用しています。
+	nntplib.c は nntp-1.5.11 に含まれる client.c を参考に書かれていま
+	す。
+	rmail.h, rmail.c は Emacs の rmail.el を多少参考にしましたが、コー
+	ドはオリジナルです。
+	mimelib.h, mimelib.c は metamail の codes.c を参考に書かれています。
+	変換テーブルは都合上同じですが、コードはオリジナルです。
+	youbin.c は伊藤@奈良先端科学技術大学院大学さんが書かれたものですが、
+	著作権は主張されていません。また mnews では YOUBIN プロトコルを使用
+	すると明示した場合のみ、youbin.c のコードが使用され、通常は使用され
+	ません。
+	jnames.c, inetbios.c, inetbios.h, youbin.c を除いてプログラムはオリ
+	ジナルです。著作権は宅間 顯が所有しています。
+	著作権については十分注意しておりますが、第三者の著作権侵害について
+	も、当該第三者(著作権保持者)以外については一切責任は持ちません。
+
+配布規定
+	必要なファイルを削除したり、改変しない限り自由に配布して利用できま
+	す。営利目的での配布/使用はお断りします。
+	プログラムに不具合があり改変する場合は作者まで確認をとって下さい。
+	機能追加などの変更をされる際は作者まで変更点の確認をとって、変更後
+	は該当部分を知らせて下さい。そして変更したままで配布しないで下さい。
+	これは派生バージョンによる混乱を避けるためです。
+
+連絡先
+	Matsushita Soft-Research, INC.	Akira Takuma	宅間 顯
+	E-mail	takuma@msr.mei.co.jp

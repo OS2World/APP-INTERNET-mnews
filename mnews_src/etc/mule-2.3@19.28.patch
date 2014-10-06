@@ -1,0 +1,41 @@
+*** movemail.c.old	Fri Aug  5 08:15:22 1994
+--- movemail.c	Thu Jan 18 23:57:39 1996
+***************
+*** 97,102 ****
+--- 97,104 ----
+  #undef write
+  #undef close
+  
++ #define MAIL_USE_POP
++ 
+  char *concat ();
+  char *xmalloc ();
+  #ifndef errno
+***************
+*** 164,169 ****
+--- 166,173 ----
+  	if (*user == ':')
+  	  break;
+  
++       user++;
++ 
+        status = popmail (user, outname);
+        exit (status);
+      }
+***************
+*** 669,675 ****
+  pop_retr (msgno, action, arg)
+       int (*action)();
+  {
+!   char buf[128];
+  
+    sprintf (buf, "RETR %d", msgno);
+    if (debug) fprintf (stderr, "%s\n", buf);
+--- 673,679 ----
+  pop_retr (msgno, action, arg)
+       int (*action)();
+  {
+!   char buf[1024];
+  
+    sprintf (buf, "RETR %d", msgno);
+    if (debug) fprintf (stderr, "%s\n", buf);

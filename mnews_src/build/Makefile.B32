@@ -1,0 +1,326 @@
+#
+#	Mini News Reader Ver 1.21
+#	Makefile for source release [for MS-DOS Borland-C++ 32bit only]
+#
+
+#SHELL		= command.com
+ARCH		= MSDOS
+CC		= bcc32 -O2 -a -d -w-pro -M -D__STDC__ -DWINSOCK
+#CC		= bcc32 -v  -a -d -w-pro -M -D__STDC__ -DWINSOCK
+LIBS		= 
+#LIBS		= /usr/lib/libh.lib
+#LD		= tlink32
+LD_FLAG		= 
+BIN_DIR		= \usr\local\bin
+LIB_DIR		= \usr\local\lib
+MAN_DIR		= \usr\man
+#STRIP		= tdstrp32
+STRIP		= echo
+
+OPTCFG		= mnews.opt
+OBJCFG		= mnews.ctl
+NET_OPT		= -DNNTP -DSMTP -DPOP3
+#NET_OPT	= -DNNTP -DNSPL -DSMTP -DMTAP -DPOP3 -DMSPL
+CONS_OPT	= -DNEWSPOST -DMAILSEND -DMH -DRMAIL -DUCBMAIL -DMIME -DFCC -DJNAMES -DPAGER
+#CONS_OPT	= -DNEWSPOST -DPAGER
+CONF_OPT	= -DSJIS_SRC -DCTRL_L -DCOMPLETION -DREF_SORT -DLARGE -DDISPLAY_CTRL -DSUPPORT_X0201 -DUSE_LONG_FNAME
+SRC_DIR		= ..\src
+COMPAT_DIR	= ..\compat
+TCP_DIR		= ..\tcplib
+NNTP_DIR	= ..\nntplib
+SMTP_DIR	= ..\smtplib
+POP3_DIR	= ..\pop3lib
+KANJI_DIR	= ..\kanjilib
+TERM_DIR	= ..\termlib
+MIME_DIR	= ..\mimelib
+DOC_DIR		= ..\doc
+ETC_DIR		= ..\etc
+BUILD_DIR	= ..\build
+INC_OPT1	= -I. -I${COMPAT_DIR}
+INC_OPT2	= -I${TCP_DIR} -I${NNTP_DIR} -I${SMTP_DIR} -I${POP3_DIR}
+INC_OPT3	= -I${KANJI_DIR} -I${MIME_DIR} -I${TERM_DIR} -I${SRC_DIR}
+BASE_OPT	= -DMNEWS -DJIS_INPUT -D${ARCH}
+CC_FLAG		= @${OPTCFG} -c
+EXE		= mnews.exe
+
+
+NEWSPOST_OBJ	= newspost.obj
+MAILSEND_OBJ	= mailsend.obj
+#JNAMES_OBJ	= jnames.obj
+JNAMES_OBJ	= jnhash.obj
+MH_OBJ		= mh.obj
+UCBMAIL_OBJ	= ucbmail.obj
+RMAIL_OBJ	= rmail.obj
+PAGER_OBJ	= pager.obj
+BOARD_OBJ	= board.obj
+FCC_OBJ		= fcc.obj
+MIME_OBJ	= mimepart.obj mimelib.obj
+
+BASE_OBJ1	= mnews.obj group.obj article.obj mark.obj compat.obj
+BASE_OBJ2	= tcplib.obj nntplib.obj smtplib.obj pop3lib.obj
+BASE_OBJ3	= kanjilib.obj termdos.obj \
+		inetbios.obj
+#		msd_dir.obj
+BASE_OBJ	= ${BASE_OBJ1} ${BASE_OBJ2} ${BASE_OBJ3}
+OPT_OBJ1	= ${NEWSPOST_OBJ} ${MAILSEND_OBJ} ${JNAMES_OBJ}
+OPT_OBJ2	= ${MH_OBJ} ${UCBMAIL_OBJ} ${RMAIL_OBJ} ${BOARD_OBJ}
+OPT_OBJ3	= ${PAGER_OBJ} ${FCC_OBJ} ${MIME_OBJ}
+OPT_OBJ		= ${OPT_OBJ1} ${OPT_OBJ2} ${OPT_OBJ3}
+OBJ		= ${BASE_OBJ} ${OPT_OBJ}
+C_OBJ		= config.obj
+COMPAT_INC	= ${COMPAT_DIR}\compat.h
+COMPAT_SRC	= ${COMPAT_DIR}\compat.c
+TCP_INC		= ${TCP_DIR}\field.h \
+		${TCP_DIR}\tcplib.h \
+		${TCP_DIR}\inetbios.h
+TCP_SRC		= ${TCP_DIR}\tcplib.c \
+		${TCP_DIR}\inetbios.c
+NNTP_INC	= ${NNTP_DIR}\nntplib.h
+NNTP_SRC	= ${NNTP_DIR}\nntplib.c
+SMTP_INC	= ${SMTP_DIR}\smtplib.h
+SMTP_SRC	= ${SMTP_DIR}\smtplib.c
+POP3_INC	= ${POP3_DIR}\pop3lib.h
+POP3_SRC	= ${POP3_DIR}\pop3lib.c
+KANJI_INC	= ${KANJI_DIR}\kanjilib.h
+#		${KANJI_DIR}\kanjiext.h
+KANJI_SRC	= ${KANJI_DIR}\kanjilib.c
+#		${KANJI_DIR}\kanjiext.c
+TERM_INC	= ${TERM_DIR}\termlib.h
+TERM_SRC	= ${TERM_DIR}\termlib.c \
+		${TERM_DIR}\termdos.c
+MIME_INC	= ${MIME_DIR}\mimelib.h
+MIME_SRC	= ${MIME_DIR}\mimelib.c
+SRC		= ${COMPAT_SRC} \
+		${NNTP_SRC} \
+		${SMTP_SRC} \
+		${POP3_SRC} \
+		${KANJI_SRC} \
+		${TERM_SRC} \
+		${MIME_SRC} \
+		${SRC_DIR}\mnews.c \
+		${SRC_DIR}\group.c \
+		${SRC_DIR}\article.c \
+		${SRC_DIR}\mark.c \
+		${SRC_DIR}\mh.c \
+		${SRC_DIR}\ucbmail.c \
+		${SRC_DIR}\rmail.c \
+		${SRC_DIR}\board.c \
+		${SRC_DIR}\newspost.c \
+		${SRC_DIR}\mailsend.c \
+		${SRC_DIR}\pager.c \
+		${SRC_DIR}\fcc.c \
+		${SRC_DIR}\mimepart.c \
+		${SRC_DIR}\jnames.c \
+		${SRC_DIR}\jnhash.c \
+		${SRC_DIR}\youbin.c
+INC		= ${COMPAT_INC} \
+		${NNTP_INC} \
+		${SMTP_INC} \
+		${POP3_INC} \
+		${KANJI_INC} \
+		${TERM_INC} \
+		${MIME_INC} \
+		${SRC_DIR}\mnews.h \
+		${SRC_DIR}\group.h \
+		${SRC_DIR}\article.h \
+		${SRC_DIR}\mark.h \
+		${SRC_DIR}\mh.h \
+		${SRC_DIR}\ucbmail.h \
+		${SRC_DIR}\rmail.h \
+		${SRC_DIR}\board.h \
+		${SRC_DIR}\newspost.h \
+		${SRC_DIR}\mailsend.h \
+		${SRC_DIR}\pager.h \
+		${SRC_DIR}\fcc.h \
+		${SRC_DIR}\mimepart.h \
+		${BUILD_DIR}\site_DOS.h \
+		${BUILD_DIR}\site_X68.h
+C_SRC		= ${SRC_DIR}\config.c
+C_INC		= ${SRC_DIR}\config.h
+SITE		= ${BUILD_DIR}\site_dep.h
+DOC1		= ${DOC_DIR}\mnews.doc \
+		${DOC_DIR}\mnews.1 \
+		${DOC_DIR}\read1ST.doc \
+		${DOC_DIR}\readme.doc \
+		${DOC_DIR}\update.doc \
+		${DOC_DIR}\FAQ.doc \
+		${DOC_DIR}\board.doc \
+		${DOC_DIR}\present.doc \
+		${DOC_DIR}\gnspool.doc \
+		${DOC_DIR}\youbin.doc
+DOC2		= ${DOC_DIR}\prerel.doc
+ETC		= ${ETC_DIR}\board.sh \
+		${ETC_DIR}\board.csh \
+		${ETC_DIR}\combine.sh \
+		${ETC_DIR}\_mnews.smp \
+		${ETC_DIR}\nemacs-3.3.2.patch \
+		${ETC_DIR}\mule-2.3@19.28.patch \
+		${ETC_DIR}\kterm-color.termcap \
+		${ETC_DIR}\kterm-color.terminfo \
+		${ETC_DIR}\jnames.smp \
+		${ETC_DIR}\jnames.fj \
+		${ETC_DIR}\jnames.jp \
+		${ETC_DIR}\jnames.tnn
+INFO		= inst_inf.h
+MAKE1		= convert.bat config.sh config.jsh Makefile.obj
+MAKE2		= Makefile.src Makefile.MSC Makefile.GCC Makefile.X68 \
+		Makefile.TCC Makefile.B16 Makefile.B32 Makefile.OS2
+SRC_DIST	= mnews_src.Lzh
+OBJ_DIST	= mnews_obj.Lzh
+EXE_DIST	= mnews_exe.Lzh
+
+all: ${EXE}
+
+obj: ${OBJ}
+
+${OPTCFG}: Makefile
+	echo ${INC_OPT1}	>  ${OPTCFG}
+	echo ${INC_OPT2}	>> ${OPTCFG}
+	echo ${INC_OPT3}	>> ${OPTCFG}
+	echo ${BASE_OPT}	>> ${OPTCFG}
+	echo ${CONS_OPT}	>> ${OPTCFG}
+	echo ${CONF_OPT}	>> ${OPTCFG}
+
+${EXE}: ${BASE_OBJ} ${OPT_OBJ} ${C_OBJ}
+	echo ${BASE_OBJ1}	>  ${OBJCFG}
+	echo ${BASE_OBJ2}	>> ${OBJCFG}
+	echo ${BASE_OBJ3}	>> ${OBJCFG}
+	echo ${OPT_OBJ1}	>> ${OBJCFG}
+	echo ${OPT_OBJ2}	>> ${OBJCFG}
+	echo ${OPT_OBJ3}	>> ${OBJCFG}
+	echo ${C_OBJ}		>> ${OBJCFG}
+	${CC} -e${EXE} ${LD_FLAG} @${OBJCFG} ${LIBS}
+	#${STRIP} $@
+
+${C_OBJ}: ${C_SRC} ${C_INC} ${SITE} ${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${C_SRC}
+
+compat.obj: ${COMPAT_INC} ${COMPAT_DIR}\compat.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${COMPAT_DIR}\compat.c
+
+tcplib.obj: ${COMPAT_INC} ${TCP_INC} ${TCP_DIR}\tcplib.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${TCP_DIR}\tcplib.c
+
+nntplib.obj: ${COMPAT_INC} ${TCP_INC} ${NNTP_INC} ${NNTP_DIR}\nntplib.c \
+		${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${NNTP_DIR}\nntplib.c
+
+smtplib.obj: ${COMPAT_INC} ${TCP_INC} ${SMTP_INC} ${SMTP_DIR}\smtplib.c \
+		${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${SMTP_DIR}\smtplib.c
+
+pop3lib.obj: ${COMPAT_INC} ${TCP_INC} ${POP3_INC} ${POP3_DIR}\pop3lib.c \
+		${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${POP3_DIR}\pop3lib.c
+
+inetbios.obj: ${TCP_INC} ${TCP_DIR}\inetbios.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${NET_OPT} ${TCP_DIR}\inetbios.c
+
+kanjilib.obj: ${COMPAT_INC} ${KANJI_INC} ${KANJI_DIR}\kanjilib.c ${OPTCFG}
+	${CC} ${CC_FLAG} -DDELETE_X0212 ${KANJI_DIR}\kanjilib.c
+
+#kanjiext.obj: ${COMPAT_INC} ${KANJI_INC} ${KANJI_DIR}\kanjiext.c ${OPTCFG}
+#	${CC} ${CC_FLAG} -DDELETE_X0212 ${KANJI_DIR}\kanjiext.c
+
+#termlib.obj: ${COMPAT_INC} ${TERM_INC} ${TERM_DIR}\termlib.c ${OPTCFG}
+#	${CC} ${CC_FLAG} ${TERM_DIR}\termlib.c
+
+termdos.obj: ${COMPAT_INC} ${TERM_INC} ${TERM_DIR}\termdos.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${TERM_DIR}\termdos.c
+
+mimelib.obj: ${COMPAT_INC} ${MIME_INC} ${MIME_DIR}\mimelib.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${MIME_DIR}\mimelib.c
+
+jnames.obj: ${SRC_DIR}\jnames.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\jnames.c
+
+jnhash.obj: ${COMPAT_INC} ${KANJI_INC} ${SRC_DIR}\jnhash.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\jnhash.c
+
+mnews.obj: ${INC} ${SRC_DIR}\mnews.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\mnews.c
+
+group.obj: ${INC} ${SRC_DIR}\group.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\group.c
+
+article.obj: ${INC} ${SRC_DIR}\article.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\article.c
+
+mark.obj: ${INC} ${SRC_DIR}\mark.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\mark.c
+
+mh.obj: ${INC} ${SRC_DIR}\mh.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\mh.c
+
+ucbmail.obj: ${INC} ${SRC_DIR}\ucbmail.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\ucbmail.c
+
+rmail.obj: ${INC} ${SRC_DIR}\rmail.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\rmail.c
+
+board.obj: ${INC} ${SRC_DIR}\board.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\board.c
+
+newspost.obj: ${INC} ${SRC_DIR}\newspost.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\newspost.c
+
+mailsend.obj: ${INC} ${SRC_DIR}\mailsend.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\mailsend.c
+
+pager.obj: ${INC} ${SRC_DIR}\pager.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\pager.c
+
+fcc.obj: ${INC} ${SRC_DIR}\fcc.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\fcc.c
+
+mimepart.obj: ${INC} ${SRC_DIR}\mimepart.c ${OPTCFG}
+	${CC} ${CC_FLAG} ${SRC_DIR}\mimepart.c
+
+msd_dir.obj: ${SRC_DIR}\msd_dir.c ${SRC_DIR}\msd_dir.h
+	${CC} -c ${SRC_DIR}\msd_dir.c
+
+install: all
+	copy ${EXE} ${BIN_DIR}
+	copy mnews.doc ${MAN_DIR}
+
+help:
+	@echo "--- Mini News Reader Makefile [Source Version] ---"
+	@echo "make          --- make executable file"
+	@echo "make install  --- install executable & manual file"
+	@echo "make clean    --- remove backup & object file"
+	@echo "make remove   --- remove object file"
+	@echo "make help     --- print help message"
+	@echo "make src_dist --- archive source & document file"
+	@echo "make obj_dist --- archive object & document file"
+	@echo "make bin_dist --- archive executable & document file"
+
+clean:
+	-DEL ${OPTCFG}
+	-DEL ${OBJCFG}
+	-DEL *.exe
+	-DEL *.obj
+	-DEL *.bak
+
+remove:
+	-DEL ${OPTCFG}
+	-DEL ${OBJCFG}
+	-DEL *.exe
+	-DEL *.obj
+
+src_dist:
+	-DEL ${SRC_DIST}
+	lha a ${SRC_DIST} *.c *.h ${ETC} \
+		${DOC1} ${DOC2} ${MAKE1} ${MAKE2}
+
+obj_dist: ${OBJ}
+	-DEL ${OBJ_DIST}
+	lha a ${OBJ_DIST} *.obj ${C_SRC} ${C_INC} \
+		${ETC_DIR}\*.* ${DOC_DIR}\*.* ${SITE} ${MAKE1}
+
+bin_dist: ${EXE}
+	-DEL ${EXE_DIST}
+	lha a ${EXE_DIST} ${EXE} ${ETC_DIR}\*.* ${DOC_DIR}\*.* ${SITE} Makefile
+
+touch:
+	touch *.c *.h ${ETC} \
+		${DOC1} ${DOC2} ${MAKE1} ${MAKE2}

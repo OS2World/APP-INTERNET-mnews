@@ -1,0 +1,115 @@
+
+NNTPLIB(3)		C LIBRARY FUNCTIONS			NNTPLIB(3)
+
+名前
+	nntplib		NNTP ライブラリ
+
+形式
+	#include	"nntplib.h"
+
+	NNTP_ERR_CODE	nntp_select_server(char *server_name)
+	NNTP_ERR_CODE	nntp_open(void)
+	NNTP_ERR_CODE	nntp_close(void)
+	NNTP_ERR_CODE	nntp_send(char *string)
+	NNTP_ERR_CODE	nntp_receive(char *ptr, int size)
+	NNTP_ERR_CODE	nntp_list(void)
+	NNTP_ERR_CODE	nntp_free(void)
+	NNTP_ERR_CODE	nntp_group(char *group_name)
+	NNTP_ERR_CODE	nntp_article(int article_number, FILE *fp)
+	NNTP_ERR_CODE	nntp_article2(CASTPTR message_id, FILE *fp)
+	NNTP_ERR_CODE	nntp_head(int article_number, FILE *fp)
+	NNTP_ERR_CODE	nntp_head2(CASTPTR message_id, FILE *fp)
+	NNTP_ERR_CODE	nntp_body(int article_number, FILE *fp)
+	NNTP_ERR_CODE	nntp_body2(CASTPTR message_id, FILE *fp)
+	NNTP_ERR_CODE	nntp_copy_fields(int article_number,
+	                struct cpy_hdr *hdr_ptr, int number, int mask)
+	NNTP_ERR_CODE	nntp_copy_fields2(char *message_id,
+	                struct cpy_hdr *hdr_ptr, int number, int mask)
+	NNTP_ERR_CODE	nntp_post(char *file_name, char *domain_name)
+	NNTP_ERR_CODE	nntp_noop(void)
+	NNTP_ERR_CODE	nntp_description(char *group_name, char *description)
+	NNTP_ERR_CODE	nntp_xover(int group, int min, int max)
+	void		confirm_article(char *group_name, int *min_ptr,
+	                int *max_ptr)
+
+機能説明
+	nntplib は NNTP 通信処理ルーチンを集めたライブラリです。
+	nntplib は NSPL (ニューススプール参照)と NNTP (TCP/IP 通信)による
+	ニュースのアクセスの両方を同じインタフェースで提供しています。
+	これらはグローバル変数 nntp_connect_mode (0:NSPL,1:NNTP)で切替えます。
+
+	nntp_select_server 関数はマシン名 server_name のマシンに NNTP
+	サーバを切替えます。NSPL モードの場合はスループディレクトリや
+	ライブラリディレクトリが存在するかチェックのみします。
+	nntp_open 関数は NNTP サーバと接続します。NSPL モードの場合は
+	何もしません。
+	nntp_close 関数は NNTP サーバとの接続を切断します。NSPL モードの
+	場合は何もしません。
+	nntp_send 関数は NNTP サーバに文字列 string を送信します。NSPL モード
+	の場合はエラーとなります。
+	nntp_receive 関数は NNTP サーバからの応答を受信バッファ ptr に
+	最大サイズ size まで受信します。NSPL モードの場合はエラーとなります。
+	nntp_list 関数は NNTP サーバからニュースグループリストを取得し
+	ニュースグループ管理情報として記憶します。NSPL モードの場合はライブラリ
+	ディレクトリから active ファイルを参照してニュースグループリストを
+	取得します。
+	nntp_free 関数はニュースグループ管理情報を解放します。
+	nntp_group 関数はグループ名 group_name のニュースグループに移動します。
+	nntp_article 関数は記事番号 article_number の記事を取得し、ファイル
+	ポインタ fp へ書き込みます。
+	nntp_article2 関数はメッセージ ID message_id の記事を取得し、ファイル
+	ポインタ fp へ書き込みます。
+	nntp_head 関数は記事番号 article_number の記事のヘッダを取得し、
+	ファイルポインタ fp へ書き込みます。
+	nntp_head2 関数はメッセージ ID message_id の記事のヘッダを取得し、
+	ファイルポインタ fp へ書き込みます。
+	nntp_body 関数は記事番号 article_number の記事の本文を取得し、
+	ファイルポインタ fp へ書き込みます。
+	nntp_body2 関数はメッセージ ID message_id の記事の本文を取得し、
+	ファイルポインタ fp へ書き込みます。
+	nntp_copy_fields 関数は記事番号 article_number の記事のフィールドを
+	ヘッダ構造体 hdr_ptr, フィールド数 number に従って取得します。この際に
+	取得動作を mask で指定します。
+
+		フィールド処理マスク
+		CF_CLR_MASK		バッファクリア
+		CF_CNT_MASK		行数カウント
+		CF_GET_MASK		フィールド取得
+		CF_ADD_MASK		フィールド追加
+		CF_SPC_MASK		空白除去
+		CF_HED_MASK		HEAD コマンド
+
+	nntp_copy_fields2 関数はメッセージ ID message_id の記事のフィールドを
+	ヘッダ構造体 hdr_ptr, フィールド数 number に従って取得します。この際に
+	取得動作を mask で指定します。
+	フィールド処理マスクの意味は nntp_copy_field 関数と同じです。
+	nntp_post 関数はファイル名 file_name の記事ファイルをドメイン名
+	domain_name として投稿します。
+	nntp_noop 関数は NNTP サーバとの接続をチェックします。NSPL モード
+	の場合は何もしません。
+	nntp_description 関数はニュースグループ名 group_name の憲章を取得し、
+	憲章取得バッファ description に格納します。
+	nntp_xover 関数は NNTP サーバにグループ番号 group,開始記事番号 min,
+	終了記事番号 max として XOVER コマンドを発行します。
+	confirm_article 関数はニュースグループ名 group_name のニュース
+	グループの記事番号の最小,最大を取得し結果を min_ptr, max_ptr に格納
+	します。
+
+戻り値
+	confrim_article 関数は戻り値を持ちませんが、他の関数は NNTP_ERR_CODE
+	型のエラーコードを返します。
+
+	NNTP_OK			正常終了
+	NNTP_ERR_RSV		未サポート
+	NNTP_ERR_SERV		サービス中止エラー
+	NNTP_ERR_COMM		低レベル通信エラー
+	NNTP_ERR_PROT		プロトコルエラー
+	NNTP_ERR_AUTH		認証エラー
+	NNTP_ERR_PROG		プログラムエラー
+	NNTP_ERR_MEM		メモリ不足エラー
+	NNTP_ERR_FILE		ファイルエラー
+	NNTP_ERR_NONE		未存在エラー
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

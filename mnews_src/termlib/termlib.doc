@@ -1,0 +1,83 @@
+
+TERMLIB(3)		C LIBRARY FUNCTIONS			TERMLIB(3)
+
+名前
+	termlib		端末制御ライブラリ
+
+形式
+	#include	"termlib.h"
+
+	int	term_init(int mode)
+	void	term_clear_all(void)
+	void	term_clear_line(void)
+	void	term_clear_end(void)
+	void	term_bell(void)
+	void	term_locate(int x, int y)
+	void	term_home(void)
+	void	term_insert(void)
+	void	term_insert_char(void)
+	void	term_up(void)
+	void	term_down(void)
+	void	term_left(void)
+	void	term_right(void)
+	void	term_top(void)
+	void	term_crlf(int pos)
+	void	term_fill_right(void)
+	void	term_attrib(int attrib)
+	void	term_set_raw(void)
+	void	term_reset_raw(void)
+	void	term_set_cbreak(void)
+	void	term_reset_cbreak(void)
+	void	term_set_echo(void)
+	void	term_reset_echo(void)
+	void	term_set_nl(void)
+	void	term_reset_nl(void)
+	void	term_enable_mouse(void)
+	void	term_disable_mouse(void)
+	int	term_system(char *str)
+	int	term_select(void)
+
+機能説明
+	termlib は端末を制御する処理ルーチンを集めたライブラリです。
+
+	term_init 関数はモード mode (0:初期化,1:一時的に元に戻す,2:再初期化,
+	3:元に戻す)に従って端末を初期化します。
+	term_clear_all 関数は画面をクリアします。
+	term_clear_line 関数はカーソル位置の 1 行クリアします。
+	term_clear_end 関数はカーソル位置から画面右下までクリアします。
+	term_bell 関数はベルを鳴らします。
+	term_locate 関数はカーソルを座標 x,y に移動します。
+	term_home 関数はカーソルをホーム位置へ移動します。
+	term_insert 関数はカーソル位置に 1 行空行を挿入します。
+	term_insert_char 関数はカーソル位置に 1 文字空白を挿入します。
+	term_up 関数はカーソル位置を 1 行上に移動します。
+	term_down 関数はカーソル位置を 1 行下に移動します。
+	term_left 関数はカーソル位置を 1 桁左に移動します。
+	term_right 関数はカーソル位置を 1 桁右に移動します。
+	term_top 関数はカーソル位置を行頭に移動します。
+	term_crlf 関数は改行します。
+	term_fill_right 関数は右端に空白を挿入します。
+	term_attrib 関数は属性 attrib に従って表示属性を変更します。
+	term_set_raw 関数は端末の RAW モードをセットします。
+	term_reset_raw 関数は端末の RAW モードをリセットします。
+	term_set_cbreak 関数は端末の CBREAK モードをセットします。
+	term_reset_cbreak 関数は端末の CBREAK モードをリセットします。
+	term_set_echo 関数は端末の ECHO モードをセットします。
+	term_reset_echo 関数は端末の ECHO モードをリセットします。
+	term_set_nl 関数は端末の NL モードをセットします。
+	term_reset_nl 関数は端末の NL モードをリセットします。
+	term_enable_mouse 関数はマウスを有効にします。
+	term_disable_mouse 関数はマウスを無効にします。
+	term_system 関数は端末を一時解放し、コマンド str を実行します。
+	term_select 関数は端末から入力があるかチェックします。
+
+戻り値
+	term_init, term_system, term_select 関数以外は戻り値を返しません。
+	term_init 関数は正常終了すれば 0 をエラーの場合は 0 以外を返します。
+	term_system 関数は system 関数の戻り値を返します。fork に失敗した
+	場合は 127 を返します。
+	term_select 関数はキー入力があれば 0 以外を、なければ 0 を返します。
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

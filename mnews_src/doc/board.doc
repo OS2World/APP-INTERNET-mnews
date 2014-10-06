@@ -1,0 +1,118 @@
+
+		mnews	ボードのインストール方法
+
+	この文書は mnews 特有のボード機能のインストール説明をしたものです。
+	mnews でいうボードとはスプールの一部をユーザ全員が見えるようにした
+	電子掲示板システムを示します。
+	ボードはニュースと同様に階層を持つことができます。記事はメールシス
+	テムを使用して投稿し、参照は同じスプールを共有するマシン間でできま
+	す。
+
+	例えば、
+
+	xxx.misc
+	xxx.rec
+
+	というボードグループを作成すると想定してインストールの手順を説明しま
+	す。
+
+	(1) ボード用スプールの確保
+
+	ボード用スプールディレクトリを作成します。
+	ここでは例として /usr/spool/board 以下に作成するものとします。
+	(SVR4 では /usr/spool/board を /var/board と置き換えて読んで下さい)
+	root ユーザになり、
+
+	mkdir /usr/spool/board
+	chmod 755 /usr/spool/board
+	cd /usr/spool/board
+	mkdir xxx
+	chmod 755 xxx
+	mkdir xxx/misc xxx/rec
+	chmod a+rwxt xxx/misc xxx/rec
+
+	として下さい。
+	当然ながら /usr/spool/board 以下に十分な空きを残しておいて下さい。
+
+	(2) aliases の設定
+
+	sendmail のエイリアス機能を設定するために /etc/aliases に
+
+	xxx_misc:	"|/usr/local/lib/board_xxx_misc.sh"
+	xxx_rec:	"|/usr/local/lib/board_xxx_rec.sh"
+
+	を追加し、newaliases を実行して alias データベースを更新します。
+	ここでもし cannot alias non-local names とかエラーがでたら、
+
+	xxx_misc@local:	"|/usr/local/lib/board_xxx_misc.sh"
+	xxx_rec@local:	"|/usr/local/lib/board_xxx_rec.sh"
+
+	として変更して再び newaliases してみて下さい。
+	(| を"..." の外に書かないと駄目なこともあるようです)
+
+	(3) シェルスクリプトの準備
+
+	mnews の付属の board.sh をボードグループ名に合わせて編集して
+	/usr/local/lib に準備します。(SVR4 ならボードスプールの変更も
+	お忘れなく)
+	具体的には
+
+	cp board.sh /usr/local/lib/board_xxx_misc.sh
+	cp board.sh /usr/local/lib/board_xxx_rec.sh
+	cd /usr/local/lib
+	chmod 755 board_xxx_misc.sh board_xxx_rec.sh
+
+	とし、board_xxx_misc.sh, board_xxx_rec.sh 中の
+
+	# Board group name
+	board_group="xxx/misc"
+		     ~~~~~~~~
+	の部分をグループ名に置き換えます。グループ名が階層を持つ場合は
+	"." を "/" に置き換えます。
+
+	例.
+	xxx.misc -> xxx/misc
+	xxx.comp.tex -> xxx/comp/tex
+
+	sendmail では C-shell スクリプトをうまく起動できないことがあるよ
+	うなので board.csh は通常使用しません。
+	         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	どなたかもうちょっとまともなシェルスクリプト書けたら下さい。(^_^)
+
+	(4) sendmail のテスト
+
+	上記の設定ができたら root から一般ユーザに戻ってテストに xxx_misc
+	及び xxx_rec にテスト記事をメールで送信してみて下さい。
+	例えば以下のようにします。
+
+	mail -s "TEST for xxx.misc" xxx_misc
+	This is a test
+	.
+
+	/usr/spool/board/xxx/misc の下に 1 というファイルができていれば OK
+	です。同様に xxx_rec もテストして下さい。
+
+	(5) mnews のインストール
+
+	下準備ができたところで mnews をインストールします。
+	mnews はデフォルトでは使用頻度が低いため config.sh はデフォルトでは
+	ボード用のオブジェクトを組み込まないような Makefile を生成するように
+	なっていますから BOARD を使うかとの問には y と答えて下さい。
+	上記が済んだら mnews を再コンパイルして下さい。
+	投稿時に xxx_misc@local としないとうまくいかない場合はコンパイルオプ
+	ションに -DBOARD_ADD_LOCAL を加えて下さい。
+
+	(6) mnews のテスト
+
+	mnews を起動して下さい。ニュースグループの後ろに BOARD というカテゴ
+	リが表示されていると思うので選択して下さい。
+	更に xxx が表示されていると思いますので選んで下さい。その下に
+	misc, rec のボードグループが表示されているはずです。
+	misc を選んで先ほどテストで投稿した記事を参照してみて下さい。
+	それが OK なら mnews の m コマンドで To: xxx_misc としてテスト記事を
+	投稿してみて下さい。
+	一旦 mnews を終るか BOARD カテゴリを抜けてしばらくしてからもう一度
+	BOARD カテゴリの xxx.misc を選んでみて下さい。mnews から先ほど出した
+	記事が見えていれば正常です。
+	最後に念のため他のユーザからも記事が見えるか確認して下さい。
+	上記全てうまくいけばインストールは終了です。

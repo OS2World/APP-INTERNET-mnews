@@ -1,0 +1,43 @@
+*** movemail.c.old	Thu Oct 25 16:02:06 1990
+--- movemail.c	Thu Jan 18 23:49:46 1996
+***************
+*** 64,69 ****
+--- 64,71 ----
+  #undef write
+  #undef close
+  
++ #define MAIL_USE_POP
++ 
+  char *concat ();
+  extern int errno;
+  
+***************
+*** 97,104 ****
+--- 99,108 ----
+    outname = argv[2];
+  
+    /* Check access to input and output file.  */
++ #ifndef MAIL_USE_POP
+    if (access (inname, R_OK | W_OK) != 0)
+      pfatal_with_name (inname);
++ #endif /* MAIL_USE_POP */
+    if (access (outname, F_OK) == 0 && access (outname, W_OK) != 0)
+      pfatal_with_name (outname);
+  
+***************
+*** 528,534 ****
+  pop_retr(msgno, action, arg)
+  int (*action)();
+  {
+!     char buf[128];
+  
+      sprintf(buf, "RETR %d", msgno);
+      if (debug) fprintf(stderr, "%s\n", buf);
+--- 532,538 ----
+  pop_retr(msgno, action, arg)
+  int (*action)();
+  {
+!     char buf[1024];
+  
+      sprintf(buf, "RETR %d", msgno);
+      if (debug) fprintf(stderr, "%s\n", buf);

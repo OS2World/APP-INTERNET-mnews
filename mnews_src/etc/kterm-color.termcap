@@ -1,0 +1,2 @@
+kterm-color|kterm with color support:\
+	:Co#8:AB=\E[4%dm:AF=\E[3%dm:tc=kterm

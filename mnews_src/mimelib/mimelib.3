@@ -1,0 +1,169 @@
+.\" Copyright (c) 1996-1997 Matsusita Soft-Research, INC. Akira Takuma
+.TH MIMELIB 3 "1997年11月30日"
+.SH 名前
+mimelib \- MIME 処理ライブラリ
+.SH 形式
+.B #include
+\fB"\fRmimelib.h\fB"\fR
+.LP
+int
+.B mime_encode_jis
+(unsigned char*
+.I ptr1
+, unsigned char*
+.I ptr2
+, int
+.I hint_code
+)
+.LP
+int
+.B mime_decode_euc
+(unsigned char*
+.I ptr1
+, unsigned char*
+.I ptr2
+, int
+.I hint_code
+)
+.LP
+int
+.B mime_encode
+(char*
+.I ptr1
+, char*
+.I ptr2
+)
+.LP
+int
+.B mime_decode
+(char*
+.I ptr1
+, char*
+.I ptr2
+)
+.LP
+int
+.B mime_encode_file
+(MIME_TTYPE
+.I mime_ttype
+,FILE*
+.I fp1
+, FILE*
+.I fp2
+)
+.LP
+int
+.B mime_decode_file
+(MIME_TTYPE
+.I mime_ttype
+,FILE*
+.I fp1
+, FILE*
+.I fp2
+)
+.SH 機能説明
+.B mimelib
+は MIME 処理ルーチンを集めたライブラリです。
+.LP
+.B mime_encode_jis
+関数は文字列
+.I ptr2
+を JIS コードに変換した後に MIME エンコードして文字列格納領域
+.I ptr1
+に格納します。JIS コードに変換する際の漢字ヒントコードは
+.I hint_code
+とします。
+.LP
+.B mime_decode_euc
+関数は文字列
+.I ptr2
+を MIME デコードした後に EUC コードに変換し文字列格納領域
+.I ptr1
+に格納します。EUC コードに変換する際の漢字ヒントコードは
+.I hint_code
+とします。
+.LP
+.B mime_encode
+関数は文字列
+.I ptr2
+を MIME エンコードして文字列格納領域
+.I ptr1
+に格納します。
+.LP
+.B mime_decode
+関数は文字列
+.I ptr2
+を MIME デコードして文字列格納領域
+.I ptr1
+に格納します。
+.LP
+.B mime_encode_file
+関数はファイルディスクリプタ
+.I fp1
+のバイナリファイルを
+.B mime_ttype
+で指定されたエンコードタイプでエンコードし、ファイルディスクリプタ
+.I fp2
+にテキストファイルとして出力します。
+.LP
+.B mime_decode_file
+関数はファイルディスクリプタ
+.I fp1
+のテキストファイルを
+.I mime_ttype
+で指定されたエンコードタイプでデコードし、ファイルディスクリプタ
+.I fp2
+にバイナリファイルとして出力します。
+.SH 戻り値
+.B mime_encode_jis
+,
+.B mime_decode_euc
+,
+.B mime_encode
+,
+.B mime_decode
+関数は int 型の戻り値を返します。
+.RS
+.TP
+負数
+エラー
+.TP
+0
+MIME を処理していない。
+.TP
+正数
+MIME を処理した。
+.RE
+.LP
+.B mime_encode_file
+関数は int 型の戻り値を返します。
+.LP
+.RS
+.TP
+負数
+エラー
+.TP
+0
+エンコード終了
+.TP
+正数
+エンコードしたバイト数
+.RE
+.LP
+.B mime_decode_file
+関数は int 型の戻り値を返します。
+.LP
+.RS
+.TP
+負数
+エラー
+.TP
+0
+デコード成功(継続)
+.TP
+1
+デコード成功(終了)
+.RE
+.SH バグ
+信頼性は保証できませんが、このライブラリを使用したプログラム
+で現在のところ特に支障は起きていません。

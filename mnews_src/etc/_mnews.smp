@@ -1,0 +1,112 @@
+#
+# This is a sample mnews setup file.
+#
+gnus_mode:	off
+group_mask:	on
+news_article_mask:off
+mail_article_mask:off
+#		0:Date+From+Subject 1:From+Subject 2:Subject
+article_format:	0
+#		0:No conversion 1:Decode only 2:Decode+Encode
+mime_format:	1
+news_thread_mode:on
+mail_thread_mode:off
+#		0:Ignore 1:MSPL/POP3 2:msgchk(MH/MMH)
+msgchk_rule:	1
+#		0:Subject 1:Reference 2:Date
+sort_rule:	0
+mail_mode:	off
+error_mode:	off
+quiet_mode:	off
+japanese_mode:	on
+pager_mode:	off
+cross_mark_mode:off
+mh_mode:	on
+ucbmail_mode:	on
+rmail_mode:	on
+board_mode:	on
+board_count_mode:	off
+#board_dir:	/var/spool/board
+mh_mark_mode:	on
+mh_select_mode:	on
+mh_alias_mode:	off
+#mh_alias_file:	Mail/mh_alias
+nntp_mode:	on
+smtp_mode:	on
+pop3_mode:	on
+rpop_mode:	off
+pop3_del_mode:	on
+add_cc_mode:	off
+reply_cc_mode:	on
+add_lines_mode:	on
+inews_sig_mode:	on
+ask_distrib_mode: on
+wide_mode:	off
+bell_mode:	off
+x_nsubj_mode:	on
+auto_sig_mode:	off
+from_mode:	off
+jst_mode:	on
+my_adrs_mode:	off
+dnas_mode:	off
+#xover_mode:	off
+unixfrom_mode:	on
+scroll_mode:	on
+auto_inc_mode:	off
+#auto_inc_folder:inbox
+print_code:	ASCII
+#default_code:	EUC
+edit_code:	EUC
+save_code:	EUC
+input_code:	EUC
+fcc_code:	EUC
+pipe_code:	EUC
+lpr_code:	EUC
+indicator:	\  | 
+reply_message:	%Iの記事において\n%z時間%Y年%m月%d日(%W)%H時%M分%S秒頃、\60n%F{さん,私}は\60n書きました。\n
+follow_message:	%Nの%Iの記事において\n%z時間%Y年%m月%d日(%W)%H時%M分%S秒頃、\60n%F{さん,私}は\60n書きました。\n
+forward_start:	------- Forwarded Message\n
+forward_end:	\n------- End of Forwarded Message
+mail_field:
+news_field:
+send_filter:
+post_filter:
+#edit_command:	/usr/local/bin/nemacs -nw
+#pager_command:	/usr/local/bin/less
+#lpr_command:	nens -r | lpr
+#ucbmail_mbox:	mbox
+#rmail_mbox:	RMAIL
+mail_fcc_field: Mail/mail_fcc
+news_fcc_field: Mail/news_fcc
+#tmp_dir:	/var/tmp
+#save_dir:	~/News
+#ignore_groups:	alt. comp. control
+#read_groups:	fj.rec.
+#jnames_file:	/usr/local/lib/jnames
+#color_mode:	off
+#color_code:	4 1 4 1 6 1 7 7 7 7 6 4 1 5 2 2 3 2 2 2
+#               | | | | | | | | | | | | | | | | | | + +JNAMES
+#               | | | | | | | | | | | | | | | | | | +--FOLLOW      (pager)
+#               | | | | | | | | | | | | | | | | | +----Newsgroups: (pager)
+#               | | | | | | | | | | | | | | | | +------Date:       (pager)
+#               | | | | | | | | | | | | | | | +--------Cc:         (pager)
+#               | | | | | | | | | | | | | | +----------To:         (pager)
+#               | | | | | | | | | | | | | +------------From:       (pager)
+#               | | | | | | | | | | | | +--------------CANCEL/DELETE
+#               | | | | | | | | | | | +----------------THREAD SUBJECT
+#               | | | | | | | | | | +------------------SUBJECT
+#               | | | | | | | | | +--------------------LINES
+#               | | | | | | | | +----------------------DATE
+#               | | | | | | | +------------------------FROM
+#               | | | | | | +--------------------------NUMBER
+#               | | | | | +----------------------------MARK
+#               | | | | +------------------------------CATEGORY
+#               | | | +--------------------------------ERROR
+#               | | +----------------------------------GUIDE LINE
+#               | +------------------------------------HEADER
+#               +--------------------------------------TITLE BAR
+max_thread_number:	30
+#
+#kill_from:	takuma@msr.mei.co.jp (Akira Takuma)
+#kill_subject:	test
+#second_adrs:	takuma@local

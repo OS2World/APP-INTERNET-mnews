@@ -1,0 +1,15 @@
+
+KANJILIB(3)		C LIBRARY FUNCTIONS			KANJILIB(3)
+
+名前
+	kanjilib	漢字処理ライブラリ
+
+形式
+	#include	"kanjilib.h"
+
+機能説明
+	kanjilib は漢字処理ルーチンを集めたライブラリです。
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

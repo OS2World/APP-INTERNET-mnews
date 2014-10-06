@@ -1,0 +1,859 @@
+
+	mnews		ミニ・ニュースリーダ (Ver 1.21 用)
+
+概要
+	mnews は電子ニュース/電子メールを読むための小型のニュースリーダで
+	す。
+	mnews は小型化,高速化,幅広い環境への対応,そして簡単に使用できること
+	を目標に開発されました。
+	小型化に関しては Emacs+gnus や vin よりも実行ファイルのサイズ、実
+	行時に必要なメモリともに相当に小さくなっています。
+	高速化についても数あるニュースリーダの中では割合速い方に属すると思
+	います。(機能追加してだいぶ遅くなってしまいましたが)
+	幅広い環境への対応については電子ニュースには NNTP/NSPL (ニュース
+	スプール参照),メール送信には SMTP/MTAP(MTA パイプ起動),メール受信
+	には POP3/MSPL(メールスプール参照)モードに対応しており環境に応じた
+	選択が利用可能です。
+	簡単に使用できる点については特に重点をおき、なるべく表示は日本語化
+	し、操作は vin と gnus どちらのユーザからでも移行しやすい体系(基本
+	は gnus 互換)にし、複数ストロークの複雑なキー操作は廃止しました。
+	また設定についてもほとんどメンテナンスフリーとしました。
+	電子メールについては MH, UCB-mail, RMAIL 形式をサポートしています。
+	また、電子掲示板(BOARD)にも対応しています。
+	MIME 対応については ISO-2022-JP 形式の日本語ヘッダを扱う機能とバイ
+	ナリファイルの送受信に対応しています。(GIF,JPEG,MPEG.AUDIO,PostScript
+	データの表示にはそれぞれビューアー/プレイヤーが別途必要です)
+
+動作環境
+	サポートしている機種(OS)は以下の通りです。
+
+	SUN(OS 3.3以上, OS 5.X), DECstation(ULTRIX 4.X),
+	NEWS(OS 4.X以上), NeXT(NeXT STEP 2.X/3.X),
+	PC-AT(386BSD, NetBSD, FreeBSD, Linux, UNIX System V/386),
+	RS-6000(AIX 3.X), EWS4800(EWS UX/V Rel4.2), UP4800(UP-UX/V Rel4.X),
+	LUNA(UNIOS-B 1.X,2.X/3.X, MACH 2.X), (OKIstation7300),
+	HP(UP-UX 8.X以上), DEC ALPHA-AXP(OSF/1 V1.3,V2.X,V3.X),
+	SGI(IRIX 4.X/5.X/6.X), MIPS(RISC/OS 4.5X), SUMISTATION,
+	MS-DOS(MS-C 6.0以上/Turbo-C++ 2.0/Borland-C++ 5.0J)(βレベル),
+	Windows 95+Winsock,PC-9801(PANIX 3.X),X680x0(Human 2.X以上+
+	gcc 1.17/1.2X+libc 1.1.29Fix-B/1.1.32),OS/2(EMX 0.9c)
+
+	その他の機種の方は一番近いマシンに合わせてみて下さい。
+	動作確認はソルボーンシリーズ 5, S4000, SPARC station 2/20,
+	Panasonic P2100/P2200 上の(SUN-OS 4.X/5.X), X68000, AT 互換機上の
+	MS-DOS/Windows 95 及び FreeBSD で行なっていますが、不十分かも知れ
+	ません。
+
+注意事項
+	このソフトは正常に動作すべく開発されていますが、全くの無保証です。
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	従ってこのソフトを使用したことにより何らかの(例えばメールが消失し
+	た/出したはずの記事が届いていないなど)損失が発生しても作者は責任
+	を持ちません。(バグレポートやパッチは大歓迎です。)
+	使用は各自の責任において行なって下さい。
+
+本アーカイブの内容
+	[build ディレクトリ]
+	config.sh		コンフィグ用シェルスクリプト(UNIX英語版用)
+	config.jsh		コンフィグ用シェルスクリプト(UNIX日本語版用)
+	Makefile.obj		オブジェクトモジュール用 Makefile(UNIX自動
+				生成用)
+	Makefile.src		ソースモジュール用 Makefile(UNIX自動生成用)
+	Makefile.MSC		ソースモジュール用 Makefile(MS-C 6.X/7.X用)
+	Makefile.TCC		ソースモジュール用 Makefile(Turbo-C用)
+	Makefile.B16		ソースモジュール用 Makefile(Boland-C++ 16bit用)
+	Makefile.B32		ソースモジュール用 Makefile(Boland-C++ 32bit用)
+	Makefile.GCC		ソースモジュール用 Makefile(GCC用)
+	Makefile.X68		ソースモジュール用 Makefile(X680x0 CC用)
+	Makefile.OS2		ソースモジュール用 Makefile(OS/2 EMX用)
+	[doc ディレクトリ]
+	mnews.doc		マニュアル(プレーンテキスト)
+	mnews.1			マニュアル(nroff man マクロ形式)
+	read1ST.doc		最初に読んで頂きたい注意事項
+	readme.doc		インストール方法
+	prerel.doc		バージョンアップ履歴(正式リリース前の分)
+	update.doc		バージョンアップ履歴(正式リリース後の分)
+	FAQ.doc			よく問われる Q&A 集
+	board.doc		ボード機能の捕捉説明書
+	present.doc		知ってると便利な余談集
+	youbin.doc		郵便プロトコル対応説明書
+	gnspool.doc		gnspool 対応説明書
+	[etc ディレクトリ]
+	board.sh		ボードサンプルシェルスクリプト(sh 用)
+	board.csh		ボードサンプルシェルスクリプト(csh 用)
+	combine.sh		uuencode 結合サンプルシェルスクリプト(sh 用)
+	jnames.smp,jnames.fj,jnames.jp,jnames.tnn
+				JNAMES データベースサンプルファイル
+	_mnews.smp		~/.mnews_setup サンプルファイル
+	mule-2.3@19.28.patch	Mule の movemail を POP3 対応するパッチ
+				(未サポート)
+	nemacs-3.3.2.patch	Nemacs の movemail を POP3 対応するパッチ
+				(未サポート)
+	kterm-color.termcap	kterm の termcap (カラー用)
+	kterm-color.terminfo	kterm の terminfo (カラー用)
+	(win32dll.lzh)		Win32 DLLソース(Borland-C++ 4.5 用,
+				Windows 版は未サポートのため未使用)
+				(協力 高木@べっこあめさん)
+	[compat,tcplib,nntplib,smtplib,pop3lib,kanjilib,mimelib,src
+	ディレクトリ]
+	config.h		コンフィグファイル(基本的に変更不要)
+	mnews.c, group.c, article.c, mark.c, mh.c, ucbmail.c, rmail.c,
+	board.c, newspost.c, mailsend.c, pager.c, fcc.c, mimelib.c,
+	compat.c, tcplib.c, nntplib.c, smtplib.c pop3lib.c kanjilib.c,
+	termlib.c,
+	config.c, jnames.c, jnhash.c
+	mnews.h, group.h, article.h, mark.h, mh.h, ucbmail.h, rmail.h,
+	board.h, newspost.h, mailsend.h, pager.h, fcc.h, mimelib.h,
+	tcplib.c, nntplib.h, smtplib.h pop3lib.h kanjilib.h, termlib.h,
+	compat.h
+				ソースファイル(基本的に変更不要)
+	termdos.c		端末ライブラリ(MS-DOS,X680x0,OS/2 用)
+	site_DOS.h		サイト固有の設定ファイル(MS-DOS,OS/2 用)
+	site_X68.h		サイト固有の設定ファイル(X680x0 用)
+
+	ただしオブジェクトディストリビューションの場合はコンフィグ部分を
+	除いてソースは付属していません。
+	またエグゼキュータブルディストリビューションの場合は全てのソース
+	ファイルは付属していません。
+
+著作権
+	jnames.c は System-V でのコンパイルエラー回避のために一部改変した
+	以外はオリジナルのままです。著作権は原作者(實藤@ソニーさん?)にあり
+	ます。差出人の jnames ドメイン名の決定は vin の Kanjiname kit(大西
+	@松下電器さん)のものを参考にさせて頂いています。
+	jnames.c と等価な働きをする jnhash.c は私が記述したコードです。
+	inetbios.h, inetbios.c の著作権は原作者の沢田@ムライ電気さんにあり
+	無変更で MS-DOS 版に限って使用しています。
+	nntplib.c は nntp-1.5.11 に含まれる client.c を参考に書かれていま
+	す。
+	rmail.h, rmail.c は Emacs の rmail.el を多少参考にしましたが、コー
+	ドはオリジナルです。
+	mimelib.h, mimelib.c は metamail の codes.c を参考に書かれています。
+	変換テーブルは都合上同じですが、コードはオリジナルです。
+	youbin.c は伊藤@奈良先端科学技術大学院大学さんが書かれたものですが、
+	著作権は主張されていません。また mnews では YOUBIN プロトコルを使用
+	すると明示した場合のみ、youbin.c のコードが使用され、通常は使用され
+	ません。
+	jnames.c, inetbios.c, inetbios.h, youbin.c を除いてプログラムはオリ
+	ジナルです。著作権は宅間 顯が所有しています。
+	著作権については十分注意しておりますが、第三者の著作権侵害について
+	も、当該第三者(著作権保持者)以外については一切責任は持ちません。
+
+配布規定
+	必要なファイルを削除したり、改変しない限り自由に配布して利用できま
+	す。営利目的での配布/使用はお断りします。
+	プログラムに不具合があり改変する場合は作者まで確認をとって下さい。
+	機能追加などの変更をされる際は作者まで変更点の確認をとって、変更後
+	は該当部分を知らせて下さい。そして変更したままで配布しないで下さい。
+	これは派生バージョンによる混乱を避けるためです。
+
+インストール
+	設定には十分気をつけてインストールして下さい。
+	わからないことがあった場合は、まずマニュアルである "mnews.1" または
+	"mnews.doc" と FAQ(Frequently Asked Questions) とその回答を書いた
+	"FAQ.doc" を参照して下さい。それでもわからない時は、ニュースグループ
+	fj.news.reader.mnews で質問してみるか、私まで連絡するか、mnews-ML
+	(メーリングリスト)にでも参加して尋ねて下さい。質問にはなるべくお答え
+	していますが、私の手元には毎日数通の要望、質問、バグレポートなどが
+	送られてきますので、素早く的確なリプライは過度に期待しないで下さい。
+
+	mnews にはソース/オブジェクト/エグゼキュータブルの 3 種類の配布
+	形態があります。
+
+	ソースディストリビューション
+		mnews のソースフルセットの配布形態です。通常この形態で配布
+		されています。
+		make src_dist で作れますが、通常は私が作成して配布します
+		から、他の皆さんはこれを使わず、私の配布したままのアーカイ
+		ブを使用して下さい。
+
+	オブジェクトディストリビューション
+		mnews をオブジェクトファイルまでコンパイルして配布する形態
+		です。同じアーキテクチャで同じ OS のマシンに何台もインストー
+		ルする場合に使用します。この形態で配布してもサイト独自のコ
+		ンフィグが可能です。
+		make obj_dist で作れますが、わからなかったら気軽に質問して
+		下さい。
+
+	バイナリディストリビューション
+		特定のアーキテクチャの特定の OS に依存した実行ファイルを
+		配布する形態です。この形態ではコンパイル時のコンフィグが反
+		映されるので自由なコンフィグは不可能です。ただ、ユーザ環境
+		については ~/.mnews_setup で変更可能です。
+		この形態はコンパイル環境をインストールしていない Linux,
+		386BSD,FreeBSD,BSDI,Solaris 2.X,MS-DOS,Human68K などのため
+		にあります。
+		make bin_dist で作れますが、わからなかったら気軽に質問して
+		下さい。
+
+	mnews のインストールには必要最低限のコンフィグレーションが必要です。
+	インストールには、以下の条件を満たしている必要があります。
+
+	(1) 日本語の扱えるエディタ(emacs など)がある。(対応漢字コードは
+	    EUC, JIS, SHIFT-JIS のいずれでも良い。)
+	    日本語が扱えなくても動きますが、日本語の記事は出せません。
+	(2) 自ホストがニュースサーバをしているか、NNTP 接続できるニュース
+	    サーバがある。(ただしローカルスプール設定の場合は不要)
+	(3) メールを送信する場合は sendmail が JIS コードで送信できる状態に
+	    あること。
+	(4) ニュースを投稿する場合で自ホストがニュースサーバの場合は inews
+	    が使用できる状態にあること。(インストールで NNTP_MODE を 1 にす
+	    れば不要になります)
+
+	インストールの手順を以下に示します。(事前にカレントディレクトリを
+	build に移動しておいて下さい)
+
+	・ソース/オブジェクトディストリビューションの場合
+
+	(1) シェルスクリプトである config.sh を実行して下さい。(UNIX用のみ)
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    日本語文字列が echo で通るマシンの場合は config.sh の代わりに
+	    config.jsh が使用できます。(メッセージが日本語になります)
+	    MS-DOS/X680x0 の場合は、kcnv.exe をお持ちの場合は、build ディレ
+	    クトリで covnert.bat を実行して漢字コードを変換して下さい。
+	    kcnv.exe がない場合は、フリーソフトウェアである nkf を入手して
+	    convert.bat 中の kcnv -Es を nkf -s に置換してから実行して下さい。
+	    また、config.sh は実行できないので CONS_OPT や CONF_OPT の意味
+	    だけ読んでおいて (2) に進んで下さい。
+	    UNIX の場合はメッセージに従って適当に y/n を選んだりしてください。
+	    デフォルトでいい部分ではリターンを入力するだけで構いません。
+	    全ての問に答えると Makefile と site_dep.h が自動生成されます
+	    から、間違ってもいきなり make -f Makefile.src などとしてはいけ
+	    ません。
+	    Makefile.src 及び Makefile.obj は通常変更してはいけません。
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    config.sh で自動設定されるパラメータの意味を以下に示します。
+
+	    CONS_OPT (ソース/オブジェクトリリース両方で変更可能)
+
+		ネットワーク機能を持たない場合は NEWSPOST も指定しないで下さ
+		い。
+
+		NEWSPOST	ニュースの投稿/フォローができます。
+				(この指定を外すとニュースはリードオンリーに
+				なります。)
+		MAILSEND	メールの送信/返信/転送ができます。
+				(この指定を外すとメールはリードオンリーにな
+				ります。)
+		JNAMES		From アドレスなどを jnames 対応して日本語
+				変換表示します。
+		MH		MH モードが使用できます。(MH もしくは MMH
+				がインストールされている必要があります)
+		UCBMAIL		UCB-mail モードが使用できます。
+		RMAIL		RMAIL モードが使用できます。
+		BOARD		BOARD (電子掲示板)モードが使用できます。
+				BOARD モードは用途が少ない割にサイズが大きい
+				のでデフォルトの設定では組み込まれませんので
+				ご注意下さい。
+		PAGER		less 下位互換の内蔵ページャーが使用できます。
+				この指定を外すと less などの外部ページャーを
+				必要とします。
+				(つけていても -p オプションで外部ページャー
+				は使用できます。)
+		FCC		FCC 対応します。
+		SUNOS_3X	SUN-OS 3.X 用です。
+		SUNOS_40	SUN-OS 4.0.X または OS/MP 4.0X の場合は ld
+				で strncasecmp 関数がないと怒られますので必
+				要ですが、SUN-OS 4.1.X または OS/MP 4.1X の
+				場合は不要です。(あっても正常に動きます。)
+
+	    NET_OPT (ソースリリースでのみ変更可能)
+
+		WINSOCK		Winsock を使用します。(DOS+Winsock 版のみ)
+		INETBIOS	INETBIOS を使用します。(DOS 版のみ)
+				この指定を行なわない場合は、Winsock を使用
+				します。(未テスト)
+		NNTP		NNTP (TCP 通信でスプールを見る機能)モードを
+				サポートします。
+		NSPL		NSPL (ニューススプールを見る機能)モードを
+				サポートします。
+		SMTP		SMTP (TCP 通信でメール送信する機能)モードを
+				サポートします。
+		MTAP		パイプ接続で MTA(sendmail) を起動してメール
+				を送信するモードをサポートします。
+		POP3		POP3 (TCP 通信でメール受信する機能)モードを
+				サポートします。
+		MSPL		MSPL (メールスプールを見る機能)モードを
+				サポートします。
+
+	    CONF_OPT (ソースリリースでのみ変更可能)
+
+		ADD_HOSTNAME	ドメイン名の先頭にホスト名をつけます。
+				(通常はつけません)
+		ADD_HOSTPATH	PATH にホスト名をつけます。
+				(ニュースシステム側がつけてくれない時に指定
+				して下さい。)
+		ADD_MESSAGE_ID	Message-ID を mnews がつけます。
+				(FCC ファイルなどに Message-ID がないと困る
+				場合などに有効です。)
+		BOARD_COUNT	BOARD モードにおいて .count ファイルを使用
+				して記事数を求め、高速化します。また、
+				.count ファイルがないと BOARD グループとして
+				認識しなくなります。
+		COMPLETION	ファイル/フォルダ名の補完をサポートします。
+				(通常指定しておいて下さい)
+		COLOR		カラー表示対応します。カラー表示対応版はモノ
+				クロ端末でも動かすことができますが、モノクロ
+				専用版よりは速度が低下します。
+				また kterm を使用する場合は 6.1.0 以降でない
+				~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				と表示が乱れることがあります。
+				~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		CTRL_L		記事表示時に ^L で一時停止します。
+				(通常指定しておいて下さい)
+		DELETE_FIELD	ニュース/メール同時送信時に関連ないフィールド
+				を削除します。
+		DISPLAY_CTRL	無効な ESC コードやコントロールコードを可視化
+				します。処理速度が低下しますが文字化けした記事
+				を参照しても端末がおかしくなることはまずなく
+				なります。
+		DONT_USE_REALNAME
+				ホストの正式名を必要がない限りひきません。
+				(ネームサーバが遅い場合に有効です)
+		EUC_SPOOL	メール送信/ニュースのスプールが EUC の場合
+				に指定します。(通常指定しないで下さい)
+				(ニューススプールが JIS で、メール送信が JIS
+				で可能ならメール受信スプールのコードに関わら
+				ず指定の必要はありません)
+		IGNORE_EDITOR	エディタの終了値が正常でも 0 以外のものを使
+				用する場合に指定します。これによりエディタの
+				終了値を無視するようになります。
+				vi を使用する場合には必須です。
+		LARGE		サイズを気にせず多機能にします。
+				追加される機能はマークされた記事への移動、
+				記事本文の検索機能、転送メッセージの変更
+				機能、送信/投稿時のパイプ処理機能です。また、
+				エイリアスバッファが拡大されます。
+				(主に自分専用の UNIX マシンを持っている人用
+				です)
+		LOCAL_POST	NNTP モードでも inews を使用してポストしま
+				す。決して常時 Distribution: local で投稿さ
+				れるわけではありません。
+		MOUSE		xterm/kterm 上に限りマウス操作に暫定対応しま
+				す。
+				(若干問題があります。UNIX 専用)
+		NNTP_AUTH	INN の Authority 機能に対応します。
+		RECOVER_SUBJECT	ESC 落ちした Subject: を復活します。
+		REF_SORT	リファレンスソート/日付ソートによるスレッド
+				表示に対応します。
+				このオプションを指定しなくてもサブジェクト
+				ソートだけはサポートされます。
+		RESOLVE		レゾルバを使用します。
+		SAVE_PAGER	内蔵ページャーから記事をセーブする場合に、
+				フィルタがかかったままセーブします。この指定
+				をしない場合は記事を再取得してオリジナルの
+				ままセーブし記事一覧に戻ります。
+		SELECT_EDITOR	エディタ起動前にエディタを選択できるようにな
+				ります。(個人レベルで使用する場合以外は指定
+				しない方がいいでしょう。)
+		SEND_CONFIRM	ニュース投稿/メール送信時に確認を求めます。
+				初心者の多いサイトでは指定した方がいいかも
+				知れません。
+		SJIS_SRC	ソースを SHIFT-JIS コードで編集した場合に指
+				定します。(DOS/Windows 版用)
+		SMALL		機能を絞り込んでサイズを小さくします。
+				削除される機能は英語モードのヘルプ、検索機能、
+				フィルタ機能、1行編集機能、新着記事再チェック
+				ニュースグループ入換機能、及びリスト表示可能
+				な最大記事数が減ります。
+				(主にメモリの少ない MS-DOS マシン用です)
+		SUPPORT_X0201	JIS-X0201 かなの表示をサポートします。
+				ただし、このオプションは不正な記事に対応する
+				ものであり本来ニュース/メールでは JIS-X0201
+				かなは許容されていませんからお勧めできません。
+		TRI		TRI 探索木アルゴリズムを用いて .newsrc のロー
+				ドを高速化します。ただし若干メモリを余分に消
+				費します。
+		XOVER		記事一覧取得時に XOVER を使用して高速化しま
+				す。ただし XOVER の性質上リファレンスソート
+				で多段のスレッド表示と X-Nsubject 対応ができ
+				なくなります。XOVER オプションを指定していて
+				も xover_mode: off でディセーブルすればこれら
+				の制限はなくなります。
+				(XOVER に対応していないニュースシステムに指
+				定しても動きますがメモリを損します。)
+		USE_LONG_FNAME	設定ファイルなどに . で始まるファイル名を使い
+				ます。(DOS,X68K 版用オプション)
+		USE_NLINK	MH,BOARD モードにおいてリンク数を調べて記事
+				検索速度を向上させます。ただし、フォルダ又は
+				グループディレクトリにシンボリックリンクを
+				使用している場合は誤動作します。
+		USE_NNTP_DATE	ニュースサーバの稼働テストに DATE コマンドを
+				使用します。
+
+	    BOARD モードとはユーザ間で特定のディレクトリのスプールを共有して
+	    電子掲示板として使用する機能です。通常のサイトではまず使用しない
+	    と思うので、わからない場合はデフォルトのままの設定(BOARD モード
+	    を組み込まない)にして下さい。
+	    必要のないオプションは取った方が、コンパクトになります。
+
+	    個々のマシンインストール時の注意点
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		・SUN
+		SUN でも Solaris 2.X(SUN-OS 5.X)を使用する場合は SVR4 を選ん
+		で下さい。(SVR4 の項参照)
+		原因は不明ですが、RS-232C 経由などで使用するとハングする場合
+		は mnews.c の getchar() を getchar() & 0x7F にしてみて下さい。
+		ただし Subject の入力時や検索時に漢字入力は使用できなくなり
+		ます。
+
+		・NEWS
+		コンパイル時に -Olimit 600 程度のオプションをつけないと一部
+		の関数でコンパイラの制限のため最適化できない場合があります。
+		また念のため make 時は setenv LANG ja_JP.EUC ; stty sys と
+		した方がいいでしょう。
+		NEWS-OS 3.X の場合は ARCH が NEWS ではうまく動きません。
+		この場合は ARCH は LUNA でコンパイラオプションで
+		-O -DPRINTF_ZERO とするとうまく動くようです。
+
+		・EWS4800
+		コンパイル時に -KOlimit=600 程度のオプションをつけないと一部
+		の関数でコンパイラの制限のため最適化できない場合があります。
+
+		・SVR4,Solaris 2.X
+		コンパイル時に Warning がでるかも知れませんが、気にしないで
+		下さい。
+		config.sh で termcap を使用するとリンク時に PC, BC ... とか
+		のエントリがないとエラーがでた場合は -DSYSV_CURSES を追加
+		してみて下さい。Solaris 2.X のようにメールのセパレータに
+		Content-Length: フィールドを使用するものにも自動的に対応し
+		ます。
+
+		・IBM RS6000(AIX)
+		SVR4 を選びます。一部のバージョンではコンパイル時に最適化オ
+		プションの -O を外さないと mnews が落ちたり、うまく動かない
+		ことがあるようです。(mnews 1.16 以降ではコンパイラの最適化
+		時にある程度考慮したコードに変更しましたので多分大丈夫とは
+		思いますが…)
+
+		・DEC station
+		setenv PROG_ENV POSIX した状態で make して下さい。(printf の
+		戻り値の解釈の違いのため)
+
+		・AlphaStation
+		Digital UNIX V3.2C ではコンパイルオプションに -Olimit 1024 が
+		必要です。
+
+		・DEC ALPHA-AXP
+		OSF/1 V3.1 でコンパイルの最終段階の strip で落ちる場合は
+		strip をやめる(ただし実行ファイルのサイズが巨大化する)か、
+		GNU strip を使用して下さい。
+
+		・MIPS/SUMISTATION
+		ARCH で LUNA と答えて、MIPS RISC/OS 4.5X では -DMIPS を加えて
+		下さい。
+
+		・HP-UX
+		HP-UX 7.X では正式対応していないので若干の修正が必要です。
+		(include <arpa/inet.h> を消し、termlib.c のウィンドウサイズ
+		取得部をデフォルトのままでしのぐ必要があります)
+		パイプコマンドで存在しないコマンドを指定すると落ちるかも知
+		れませんが一応対策したので多分大丈夫でしょう。(HP-UX のバグ
+		の可能性が高い)
+		setenv LANG C してから config を実行する必要があります。
+		Makefile で syntax error がでる場合は # の次の空白ばかりの
+		行を削除して下さい。
+
+		・FACOM DS/90 UXP/DS V10L20 Y93041
+		sendmail program を /usr/ucblib/sendmail -t -om -oi にして
+		おきます。
+
+		・FACOM compact-A SX/A E60b
+		-DSVR3 -DRENAME をつけてみて下さい。ちょっとはエラーが減るで
+		しょう。
+		ただし suspend ができません。
+
+		・ME350 ME/UX
+		-DSVR3 -DSTRNCASECMP をつけて compat.h で bcopy, bzero の
+		置換を行なっている行を消してみて下さい。
+		ただし suspend ができません。
+
+		・LUNA 88K MACH 2.X
+		cc では varargs.h が具合が悪いので gcc でコンパイルして下さ
+		い。
+
+		・FreeBSD
+		FreeBSD 2.0.5 では標準の make コマンドでは何故かエラーになる
+		ので Makefile の先頭のコメントと空行を削除するか、GNU make を
+		使用して下さい。
+		日本語マニュアルを参照する場合は GNU roff に日本語パッチを当
+		ててインストールして下さい。
+		
+		・Linux
+		SLS + JE 環境に合わせる場合は config.sh で
+
+		inews:	/usr/local/bin/nntp/inews
+		MH path:/usr/local/bin
+		pager:	/usr/bin/less
+
+		と答えて下さい。
+
+		・PANIX 3.0
+		sendmail の位置を /usr/ucblib/sendmail -t -om -oi と答えて
+		下さい。
+
+		・MS-DOS
+		ソースの漢字コードは build/convert.bat で SHIFT-JIS に変換
+		できます。(ただし漢字コードコンバータ kcnv が必要,nkf しか
+		ない場合は kcnv -Es を nkf -s に置き換えて実行して下さい)
+		1.19 からようやく私自身が MS-DOS でコンパイルし始めたレベル
+		なので MS-DOS 版はまだちょっといい加減でβレベルだと思って
+		下さい。(特に Makefile とメモリ不足対策)
+		コンパイルには Borland C++ 4.0 以上をお勧めします。MS-C 用の
+		Makefile もありますが、MS-C 6.0 以上用で私自身はテストして
+		いません。MS-C 5.X でもコンパイルはできますが、Makefile の
+		形式が違うので Makefile.MSC は使用できません。
+		Windows 95 上で使用する場合は -DWINSOCK をつけると Winsock
+		に対応してネットワーク接続も使用できます。
+		INETBIOS を使用する場合は、ネットワークカード/ライブラリの
+		種類によっては make できないかも知れません。
+		なお、MS-DOS 版はセパレータを \ にしていますが、/ にしたい場
+		合は SLASH_CHAR を / にしてコンパイル下さい。
+		RMAIL,UCBMAIL,BOARD モードは使用できません。
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		MH モードは MMH (拙作の参照専用 MH もどき)があれば使用でき
+		ます。
+		sendmail があるかもしくは SMTP サーバがあれば MAILSEND も
+		動きます。
+		16bit 版ではフリーメモリの少ないマシンではまともに使えない
+		かもしれません。
+		その場合は ignore_groups または read_groups パラメータで
+		ニュースグループを限定して試してみて下さい。
+		フリーな opendir(msd_dir.c) を使いたい場合は compat.h で定義
+		される HAVE_FILES を #undef して Makefile.MSC/Makefile.TCC
+		の msd_dir に関するコメントを適当に修正してくっつけて下さい。
+
+		・X680x0
+		ソースの漢字コードは build/convert.bat で SHIFT-JIS に変換
+		できます。(ただし漢字コードコンバータ kcnv が必要,nkf しか
+		ない場合は kcnv -Es を nkf -s に置き換えて実行して下さい)
+		ネットワーク機能は ESP/X に対応しています。
+		コンパイルには gcc と libc が必要です。動作確認は gcc 1.29 +
+		libc 1.1.32 で行ないました。
+		libc 1.1.29 FIX-B でもコンパイルできますが、DOS コールのバグ
+		の影響で ASK68K が組み込まれていないとキー入力回りの動きがお
+		かしくなります。
+		なお、X680x0 版はセパレータを / にしていますが、\ にしたい場
+		合は SLASH_CHAR を \ にしてコンパイル下さい。
+		RMAIL,UCBMAIL,BOARD モードは popclient.x を併用すれば使用する
+		ことができます。
+		MH モードは MMH (拙作の参照専用 MH もどき)があれば使用でき
+		ます。
+		NEWSPOST/MAILSEND を組み込んでおくと記事をエディタで書いてお
+		くことまではできるので、自宅で記事を書いてファイルを UNIX へ
+		持っていけば投稿/送信も可能です。
+
+	(2) site_dep.h の内容を確認して下さい。
+	    これは config.sh によって生成されます。ただし、MS-DOS/X680x0 では
+	    config.sh は使えませんので、site_DOS.h または site_X68.h を
+	    site_dep.h に Makefile.MSC/Makefile.TCC/Makefile.BCC または
+	    Makefile.X68/Makefile.GCC を Makefile という名前でコピーして (1)
+	    の説明を参考に Makefile の CONS_OPT, CONF_OPT あたりを修正して
+	    下さい。CONS_OPT を変更する場合は必要モジュールが変わるので
+	    ???_OBJ のコメントを足したり消したり適当にして下さい。
+
+	    site_dep.h の主要 define を説明しておきます。
+
+		PRINT_CODE	起動時の表示漢字コードです。
+				ASCII_CODE, JIS_CODE, SJIS_CODE, EUC_CODE か
+				ら選んで下さい。
+				ASCII_CODE は無変換を意味します。
+		EDIT_CODE	エディタ起動時の漢字コードです。
+				JIS_CODE, SJIS_CODE, EUC_CODE から選んで下さ
+				い。
+		SAVE_CODE	記事セーブ時のコードです。デフォルトの
+				ASCII_CODE は無変換を意味します。
+		INPUT_CODE	1 行入力ルーチンで受け付ける漢字コードです。
+				ASCII_CODE, SJIS_CODE, EUC_CODE から選んで下
+				さい。
+				ASCII_CODE は日本語を禁止します。JIS は
+				SJIS_CODE, EUC_CODE のどちらを指定しても使用
+				できます。
+		DEFAULT_CODE	自動漢字判別が失敗した場合にシステムが仮定す
+				る漢字コードです。
+				通常変更する必要はありません。
+		EDITOR_COMMAND	日本語の使用できるエディタを指定して下さい。
+		SEND_COMMAND	メール送信コマンドを指定して下さい。
+		POST_COMMAND	ニュース投稿コマンドを指定して下さい。
+				(NSPL モード時のみ使用されます。)
+		MH_COMMAND_PATH	MH のコマンドパスを指定して下さい。
+				(MH モードを使用しない時は設定する必要は
+				ありません。MS-DOS/X680x0 版では path を検索
+				しますので使用されません。)
+		MAIL_SPOOL	メールのスプールディレクトリを指定して下さい。
+		BOARD_SPOOL	BOARD (電子掲示板)の記事のあるトップディレ
+				クトリを指定して下さい。
+				(BOARD モードを使用しない時は設定する必要は
+				ありません。)
+		DOMAIN_FILE	デフォルトドメイン名を書いたファイル名を指定
+				して下さい。
+		NNTP_SERVER_FILE
+				デフォルトでアクセスする NNTP サーバ名を書い
+				たファイル名を指定して下さい。
+				(NNTP モードを使用しない場合は必要ありません)
+		SMTP_SERVER_FILE
+				デフォルトでアクセスする SMTP サーバ名を書い
+				たファイル名を指定して下さい。
+				(SMTP モードを使用しない場合は必要ありません)
+		POP3_SERVER_FILE
+				デフォルトでアクセスする POP3 サーバ名を書い
+				たファイル名を指定して下さい。
+				(POP3 モードを使用しない場合は必要ありません)
+		JNAMES_DB	JNAMES の共通のデータファイル名を指定して下さ
+				い。
+		JAPANESE	起動時の日本語/英語モード指定です。
+				日本語モードではヘルプ、リプライ/フォロー時に
+				自動的に付け加えられるメッセージが日本語になり
+				jnames を使用してアドレスが表示されます。
+				起動時に -x オプションで変更できますし、起動
+				後に変更できます。
+		X_NSUBJ_MODE	X-Nsubject: フィールドに対応するかしないかを
+				指定できます。(ユーザ毎にも変更できます。)
+		INEWS_SIG_MODE	inews を使用した場合に自動的に ~/.signature
+				を付加するかどうかを変更できます。
+		NNTP_MODE	ニュースアクセス時に NNTP/NSPL のどちらを使用
+				するか指定します。
+				起動時に -N オプションで変更できます。
+				自ホストがニュースサーバの場合は NSPL モード
+				を使用することをお勧めします。
+				ニュースサーバが別のマシンの場合は NNTP モード
+				しか使用できません。
+		SMTP_MODE	メール送信時に SMTP/MTAP のどちらを使用する
+				か指定します。
+				自ホストで sendmail が稼働している場合は MTAP
+				モードを使用することをお勧めします。
+				自ホストで sendmail が稼働していない場合は
+				SMTP モードしか使用できません。
+		POP3_MODE	メール受信時に POP3/MSPL のどちらを使用する
+				か指定します。
+				自ホストにメールスプールがあるか、別のマシンの
+				メールスプールをマウントしており、そこにメール
+				が到着する場合は MSPL モードを使用することを
+				お勧めします。
+				メールスプールが別のマシンにある場合は、POP3
+				モードしか使用できません。
+		RPOP_MODE	POP3 モード使用時に RPOP プロトコルを使用する
+				か指定します。RPOP モードの方がセキュリティー
+				が甘いのでお勧めしません。(使用不可)
+		JST_MODE	GMT 時間の記事を日本時間に変換して表示します。
+				海外で使用される場合は 0 にした方がいいでしょ
+				う。
+		TMP_DIR		テンポラリファイルを作成する作業ディレクトリ
+				を指定して下さい。
+				誰でも read/write できるディレクトリでないと
+				いけません。
+		NEWS_SPOOL_DIR	ニュースのスプールディレクトリです。
+		NEWS_LIB_DIR	ニュースのライブラリディレクトリです。
+
+	(3) より細かい設定をしたい場合は config.h の内容を変更して下さい。
+	    主要な define を以下に示します。ただし、これらはユーザの設定で
+	    変更できるのでデフォルトのままにしておいた方がいいです。
+
+		JNAMES_DOMAIN	JNAMES の名前ドメイン名を指定して下さい。
+		GNUS_MODE	起動時に GNUS モードにするかどうかの指定です。
+				GNUS モードではニュースグループが一覧表示され
+				ます。
+				起動時に -G オプションで変更できますし、起動
+				後に変更できます。
+		GROUP_MASK	Unsubscribe されたニュースグループを表示する
+				かどうかの指定です。
+				起動時に -L オプションで変更できますし、起動
+				後に変更できます。
+		ARTICLE_MASK	既読/キャンセル/ロストしたニュース記事を記
+				事選択時に表示するかどうかの指定です。
+				(1 に設定すると処理が遅くなります。)
+				起動時に -l オプションで変更できますし、起動
+				後に変更できます。
+		ARTICLE_FORMAT	記事一覧モード時の表示フォーマットです。
+				0 から 2 の数字で選択します。起動後に変更でき
+				ます。
+		SEND_FILTER	メール送信時にエディタ終了後、記事を確認する
+				までの間にここで指定したフィルタを通します。
+		POST_FILTER	ニュース投稿時にエディタ終了後、記事を確認す
+				るまでの間にここで指定したフィルタを通します。
+		COLOR_MODE	カラーモード表示するかどうかの指定です。
+				デフォルトはモノクロモードのままにしておか
+				ないとモノクロ端末のユーザが困ります。
+				起動時に -c オプションで変更できます。
+		NEWS_THREAD_MODE
+				ニュース記事選択時に Subject 毎に記事をまと
+				めるかどうかの指定です。
+				(1 に設定すると処理が少し遅くなります。)
+				起動時に -T オプションで変更できますし、起動
+				後も変更できます。
+		MAIL_THREAD_MODE
+				メール記事選択時に Subject 毎に記事をまと
+				めるかどうかの指定です。
+				(1 に設定すると処理が少し遅くなります。)
+
+		ファイルを変更したら必ず EUC または SHIFT-JIS コードでセーブ
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		して下さい。SHIFT-JIS コードでセーブした場合は CONF_OPT に
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		-DSJIS_SRC を足して下さい。
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		EUC と SHIFT-JIS でセーブしたソースを混ぜてはいけません。ど
+		ちらかで統一して下さい。
+
+	(4) make して下さい。(インストールもする場合は make install)
+	    whoami がないマシンの場合は config.sh が生成する whoami.sh を
+	    御使用下さい。
+	    MS-DOS/X68000 の場合は全ソースコードが SHIFT-JIS になっているか
+	    確認しておいてから make してください。
+	    make install せず手作業でインストールする場合は DOMAIN_FILE で
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    指定したファイル名に default-domain ファイルをリード権を与えて
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    コピーすることを忘れないで下さい。
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    MS-DOS/X68000 版ではファイル名は default-domain ではなく
+	    domain.def になります。
+
+	(5) config.sh でライブラリディレクトリを指定した場所(デフォルトでは
+	    /usr/local/lib) に default-server というファイルを作成し、デフォ
+	    ルトで参照にいかせたい NNTP サーバ名を書いて下さい。(これはしな
+	    くても動きます)
+	    MS-DOS/X68000 版ではファイル名は default-server ではなく
+	    server.def になります。ローカルスプール使用時はこの設定は全く不
+	    要です。
+	    同様に SMTP サーバは default-smtpsv, POP3 サーバは default-pop3sv
+	    というファイルで指定できます。
+	(6) INN をニュースサーバとして使用している場合は inn.conf にドメイ
+	    ン名を書いておいて下さい。この指定がないとポストに失敗します。
+	    例.
+	    domain: XXX.YYY.ZZZ
+	    また、事前に Message-ID: がついていないと投稿できない場合は
+	    ADD_MESSAGE_ID オプションを指定して mnews を作ってみて下さい。
+
+	(7) CNews をニュースサーバとして使用している場合は expire の後に
+	    /usr/lib/newsbin/expire/upact を実行して active リストの最小記
+	    事数を更新するようにしておいて下さい。この指定がなくても動きま
+	    すが、メモリを無駄に消費することがあります。
+
+	(8) 動作テストをして下さい。(ポストのテストはなるべくローカルでやっ
+	    て下さい。特に From, Organization, Path 行が正しいかを重点的に
+	    チェックして下さい。)
+
+	(9) 他のユーザさんへアナウンスしてあげて下さい。
+
+	・バイナリディストリビューションの場合
+
+	(1) 実行ファイルである mnews 及びマニュアルである mnews.doc または
+	    mnews.1 を適当なディレクトリにコピーして下さい。
+
+	(2) /usr/local/lib/default-domain というファイルをリード権を与えて
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    作成し中にドメイン名を書いて下さい。
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	(3) ソース/オブジェクトディストリビューションの場合の (5) 以降と
+	    同じ操作をしてください。
+	    NSPL モードでスプールやライブラリディレクトリを変更したい場合は
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	    環境変数 NEWSSPOOL, NEWSLIB を設定して下さい。
+	    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+PC-UNIX 対応について
+	PC-UNIX でプロバイダを通じてニュース/メールを利用する際に頭が痛い
+	のが、難しそうな設定と通信費用ですが、不勉強な私もユーザさんの励ま
+	しにより、1.20 からこの問題への対策を試行錯誤することにしました。
+
+	(1) SMTP の利用
+	    メールの送信は今まで sendmail などを介して行なっていましたが、
+	    mnews 自身も SMTP 対応可能になりました。
+
+	(2) POP3 の利用
+	    POP3 によるメールの受信は POP3 に対応した MH をインストールする
+	    ことで利用できます。
+	    RMAIL/UCB-mail モードでは mnews 自身が POP3 対応可能です。
+
+	(3) NNTP 通信量の削減(未サポート)
+	    NNTP の list コマンドを発行しないモードを利用すれば起動時の通
+	    信量を削減できます。また XOVER を利用できるニュースサーバでは
+	    XOVER オプションをつければ記事一覧表示時の通信量が削減できます。
+
+	(4) オフラインでの利用
+	    付属の gnspool.doc を参照して下さい。
+
+今後の展望
+	スレッド, 検索機能, UCB-mail, 内蔵ページャーのサポートなど当初予定
+	になかったものは要望により作成されたので今後の展望も要望次第ですね。
+
+最後に
+	mnews 製作にあたってヒントやパッチを下さったり、お忙しい中テストを
+	して下さった皆様に感謝します。
+	本プログラムの開発には以下のプログラム/ライブラリを使用しています。
+	これらを提供してくださった方々に感謝したいと思います。
+
+	[UNIX 版]
+	FreeBSD 3.0-970618-SNAP
+	Mule 2.3 (SUETSUMUHANA)
+	Nemacs 3.3.2
+	GNU make 3.74
+	gcc 2.7.2.1
+	gdb 4.16
+	kcnv 1.66(自作の漢字コードコンバータ)
+	mmh 2.00(自作の MH もどき)
+	INN 1.4
+
+	バグや改良点、感想などがありましたら、作者までお知らせ下さい。
+
+参考文献
+	RFC793	Transmission Control Protocol	(TCP)
+		Darpa Internet Program
+		Protocol Specification
+
+	RFC821	Simple Mail Transfer Protocol	(SMTP)
+
+	RFC822	Standard for the Format of ARPA Internet Text Messages
+
+	RFC850	Standard for Interchange of USENET Messages
+
+	RFC918	Post Office Protocol		(POP)
+
+	RFC934	Proposed Standard for Message Encapsulation
+
+	RFC937	Post Office Protocol - Version2	(POP2)
+
+	RFC977	Network News Transfer Protocol	(NNTP)
+		A Proposed Standard for the Stream-Based Transmission of News
+
+	RFC1321	The MD5 Message-Digest Algorithm (MD5)
+
+	RFC1468 Japanese Character Encoding for Internet Messages
+
+	RFC1521 MIME (Multipurpose Internet Mail Extensions) Part One (MIME1)
+
+	RFC1522 MIME (Multipurpose Internet Mail Extensions) Part Two (MIME2)
+
+	RFC1554 Multilingual Extension of ISO-2022-JP
+
+	RFC1081/RFC1225/RFC1725	Post Office Protocol - Version3	(POP3)
+
+	Bnews の news のマニュアル
+
+	Bnews の .newsrc のマニュアル
+
+	Cnews の inews のマニュアル
+
+	UNIX MAGAZINE '92/4 - 92/9 "CNEWS"
+
+	UNIX-OMRON SOFTWARE tool の gn(Gon's Newsreader) のマニュアル
+
+	MIME-ML 記事(mime@etl.go.jp)
+
+	UNIX システムコール・プログラミング(アスキー出版局)
+
+	UNIX ネットワーク・ベストプログラミング入門(技術評論社)
+
+	TCP/IP (ソフトリサーチセンター)
+
+	JIS ハンドブック 1992 情報処理ソフトウェア編(日本規格協会)
+
+	ポータブル UNIX プログラミング(啓学出版)
+
+	X68k Programming Series #2 X680x0 libc (ソフトバンク)
+
+	Win32 システムサービスプログラミング(プレンティスホール)
+
+連絡先
+	Matsushita Soft-Research, INC.	Akira Takuma	宅間 顯
+	E-mail	takuma@msr.mei.co.jp

@@ -1,0 +1,40 @@
+//===================================================================
+//
+//  mimelib.rc by Y.Takagi/A.Takuma
+//
+//===================================================================
+
+#include "mimelib.h"
+#include "Version.h"
+
+STRINGTABLE 
+{
+ MIME_ERROR_CODE_1, "Ignoring unrecognized code in MIME-QP."
+ MIME_ERROR_CODE_2, "Ignoring unrecognized boundary line in MIME-B64."
+ MIME_ERROR_CODE_3, "Unexpected EOL in MIME-B64."
+}
+
+1 VERSIONINFO 
+FILEVERSION PRODUCT_VERSION
+PRODUCTVERSION PRODUCT_VERSION
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_DLL
+{
+ BLOCK "StringFileInfo"
+ {
+  BLOCK "040904E4"
+  {
+	VALUE "FileDescription", "MIME encode/decode library\000"
+	VALUE "FileVersion", FILE_VERSION
+	VALUE "InternalName", "MIMELib\000"
+	VALUE "OriginalFilename", "MIMELib.dll\000"
+  }
+
+ }
+
+ BLOCK "VarFileInfo"
+ {
+  VALUE "Translation", 0x409, 1252
+ }
+
+}

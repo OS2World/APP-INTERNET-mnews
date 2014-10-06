@@ -1,0 +1,67 @@
+
+	mnews	ミニ・ニュースリーダー gnspool 利用法 (Ver 1.21 用)
+
+	この文書は mnews を gnspool (ニュースリーダ gn 付属のツール)と併用
+	してオフラインニュースリーダとして利用する方法を解説したものです。
+
+	(1) オンラインで使用するマシンで gn と gnspool を用意します。
+	    (1996-10/12 時点で最新版は gn-1.35 です)
+	(2) オフラインで使用するマシンで gninews と gnmail を用意します。
+
+		gninews の作成
+
+		src/gninews.c をコンパイルし、/usr/local/bin/gninews 等と
+		して置きます。
+
+		gnmail の作成
+
+		src/gninews.c を src/gnmail.c としてコピーします。
+		src/gnmail.c 中の以下の行を変更します。
+		   strcat(buf,"news.out");
+			       ~~~~~~~~mail.out に変更します。
+		コンパイルします。
+		src/gnmail.c をコンパイルし、/usr/local/bin/gnmail 等として
+		置きます。
+
+	(3) オフラインで使用するマシンで mnews を以下の設定で用意します。
+	    config.sh(config.jsh) において、以下指定をおこないます。
+
+	        Please input news post program and options.
+		/usr/local/bin/gninews
+		~~~~~~~~~~~~~~~~~~~~~~
+	        Please input mail send program and options.
+		/usr/local/bin/gnmail
+		~~~~~~~~~~~~~~~~~~~~~
+	        コンパイルオプションで -DLOCAL_POST を追加します。
+		メール送信モードは必ず MTAP を指定します。(smtp_mode: off)
+
+	(4) 具体的な使い方はニュースリーダ gn の docs.jp/gnspool.gon という
+	    ドキュメントを御覧下さい。(概ね以下のような使い方になります。)
+
+		オンライン側(記事のコピー)
+
+		~/.newsrc, $NEWSLIB/active, $NEWSSPOOL/ニュース記事, メール
+		記事を FD などに保存して持ち運ぶかネットワーク上でコピーして
+		接続を切ります。
+
+		オフライン側(記事の展開)
+
+		FD で保存した場合は、~/.newsrc, $NEWSLIB/active, $NEWSSPOOL/
+		ニュース記事,メール記事を展開します。
+
+		オフライン側(記事の読み書き)
+
+		mnews を使用してニュース/メールを読み書きします。
+
+		オフライン側(記事のコピー)
+
+		ニュース/メールを書いた場合は、$NEWSSPOOL/news.out,$NEWSPOOL/
+		mail.out 以下に保存されていますので、それを FD などに保存して
+		持ち運ぶかネットワーク上でコピーします。
+		~/.newsrc, $NEWSPOOL/news.out, $NEWSSPOOL/mail.out 以下の記事
+		を FD などに保存して持ち運ぶかネットワーク上でコピーして接続
+		を切ります。
+
+		オンライン側(記事の投稿/送信)
+
+		gnspool -pm で投稿/送信します。

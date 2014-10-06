@@ -1,0 +1,61 @@
+
+MIMELIB(3)		C LIBRARY FUNCTIONS			MIMELIB(3)
+
+名前
+	mimelib		MIME 処理ライブラリ
+
+形式
+	#include	"mimelib.h"
+
+	int	mime_encode_jis(unsigned char *ptr1, unsigned char *ptr2,
+	                        int hint_code)
+	int	mime_decode_euc(unsigned char *ptr1, unsigned char *ptr2,
+	                        int hint_code)
+	int	mime_encode(char *ptr1, char *ptr2)
+	int	mime_decode(char *ptr1, char *ptr2)
+	int	mime_encode_file(MIME_TTYPE mime_ttype, FILE *fp1, FILE *fp2)
+	int	mime_decode_file(MIME_TTYPE mime_ttype, FILE *fp1, FILE *fp2)
+
+機能説明
+	mimelib は MIME 処理ルーチンを集めたライブラリです。
+
+	mime_encode_jis 関数は文字列 ptr2 を JIS コードに変換した後に MIME
+	エンコードして文字列格納領域 ptr1 に格納します。JIS コードに変換する
+	際の漢字ヒントコードは hint_code とします。
+	mime_decode_euc 関数は文字列 ptr2 を MIME デコードした後に EUC コード
+	に変換し文字列格納領域 ptr1 に格納します。EUC コードに変換する
+	際の漢字ヒントコードは hint_code とします。
+	mime_encode 関数は文字列 ptr2 を MIME エンコードして文字列格納領域
+	ptr1 に格納します。
+	mime_decode 関数は文字列 ptr2 を MIME デコードして文字列格納領域
+	ptr1 に格納します。
+	mime_encode_file 関数はファイルディスクリプタ fp1 のバイナリファイル
+	を mime_ttype で指定されたエンコードタイプでエンコードし、ファイル
+	ディスクリプタ fp2 にテキストファイルとして出力します。
+	mime_decode_file 関数はファイルディスクリプタ fp1 のテキストファイル
+	を mime_ttype で指定されたエンコードタイプでデコードし、ファイル
+	ディスクリプタ fp2 にバイナリファイルとして出力します。
+
+戻り値
+	mime_encode_jis, mime_decode_euc, mime_encode, mime_decode 関数は
+	int 型の戻り値を返します。
+
+	負数	エラー
+	0	MIME を処理していない。
+	正数	MIME を処理した。
+
+	mime_encode_file 関数は int 型の戻り値を返します。
+
+	負数	エラー
+	0	エンコード終了
+	正数	エンコードしたバイト数
+
+	mime_decode_file 関数は int 型の戻り値を返します。
+
+	負数	エラー
+	0	デコード成功(継続)
+	1	デコード成功(終了)
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

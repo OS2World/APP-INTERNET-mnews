@@ -1,0 +1,388 @@
+.\" Copyright (c) 1992-1997 Matsusita Soft-Research, INC. Akira Takuma
+.TH NNTPLIB 3 "1997年09月13日"
+.SH 名前
+nntplib \- NNTP ライブラリ
+.SH 形式
+.B #include
+\fB"\fRnntplib.h\fB"\fR
+.LP
+NNTP_ERR_CODE
+.B nntp_select_server
+(char*
+.I server_name
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_open
+(void)
+.LP
+NNTP_ERR_CODE
+.B nntp_close
+(void)
+.LP
+NNTP_ERR_CODE
+.B nntp_send
+(char*
+.I string
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_receive
+(char*
+.I ptr
+, int
+.I size
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_list
+(void)
+.LP
+NNTP_ERR_CODE
+.B nntp_free
+(void)
+.LP
+NNTP_ERR_CODE
+.B nntp_group
+(char*
+.I group_name
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_article
+(int
+.I article_number
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_article2
+(CASTPTR
+.I message_id
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_head
+(int
+.I article_number
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_head2
+(CASTPTR
+.I message_id
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_body
+(int
+.I article_number
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_body2
+(CASTPTR
+.I message_id
+, FILE*
+.I fp
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_copy_fields
+(int
+.I article_number
+, struct cpy_hdr*
+.I hdr_ptr
+, int
+.I number
+, int
+.I mask
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_copy_fields2
+(char*
+.I message_id
+, struct cpy_hdr*
+.I hdr_ptr
+, int
+.I number
+, int
+.I mask
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_post
+(char*
+.I file_name
+, char*
+.I domain_name
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_noop
+(void)
+.LP
+NNTP_ERR_CODE
+.B nntp_description
+(char*
+.I group_name
+, char*
+.I description
+)
+.LP
+NNTP_ERR_CODE
+.B nntp_xover
+(int
+.I group
+, int
+.I min
+, int
+.I max
+)
+.LP
+void
+.B confirm_article
+(char*
+.I group_name
+, int*
+.I min_ptr
+, int*
+.I max_ptr
+)
+.SH 機能説明
+.B nntplib
+は
+.B NNTP
+通信処理ルーチンを集めたライブラリです。
+.B nntplib
+は NSPL (ニューススプール参照)と NNTP (TCP/IP 通信)によるニュースの
+アクセスの両方を同じインタフェースで提供しています。
+これらはグローバル変数
+.B nntp_connect_mode
+(0:NSPL,1:NNTP)で切替えます。
+.LP
+.B nntp_select_server
+関数はマシン名
+.I server_name
+のマシンに
+.B NNTP
+サーバを切替えます。NSPL モードの場合はスループディレクトリや
+ライブラリディレクトリが存在するかチェックのみします。
+.LP
+.B nntp_open
+関数は
+.B NNTP
+サーバと接続します。NSPL モードの場合は何もしません。
+.LP
+.B nntp_close
+関数は
+.B NNTP
+サーバとの接続を切断します。NSPL モードの場合は何もしません。
+.LP
+.B nntp_send
+関数は
+.B NNTP
+サーバに文字列
+.I string
+を送信します。NSPL モードの場合はエラーとなります。
+.LP
+.B nntp_receive
+関数は
+.B NNTP
+サーバからの応答を受信バッファ
+.I ptr
+に最大サイズ
+.I size
+まで受信します。NSPL モードの場合はエラーとなります。
+.LP
+.B nntp_list
+関数は
+.B NNTP
+サーバからニュースグループリストを取得しニュースグループ管理情報として
+記憶します。NSPL モードの場合はライブラリディレクトリから
+.B active
+ファイルを参照してニュースグループリストを取得します。
+.LP
+.B nntp_free
+関数はニュースグループ管理情報を解放します。
+.LP
+.B nntp_group
+関数はグループ名
+.I group_name
+のニュースグループに移動します。
+.LP
+.B nntp_article
+関数は記事番号
+.I article_number
+の記事を取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_article2
+関数はメッセージ ID
+.I message_id
+の記事を取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_head
+関数は記事番号
+.I article_number
+の記事のヘッダを取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_head2
+関数はメッセージ ID
+.I message_id
+の記事のヘッダを取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_body
+関数は記事番号
+.I article_number
+の記事の本文を取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_body2
+関数はメッセージ ID
+.I message_id
+の記事の本文を取得し、ファイルポインタ
+.I fp
+へ書き込みます。
+.LP
+.B nntp_copy_fields
+関数は記事番号
+.I article_number
+の記事のフィールドをヘッダ構造体
+.I hdr_ptr
+, フィールド数
+.I number
+に従って取得します。この際に取得動作を
+.I mask
+で指定します。
+.LP
+.RS
+フィールド処理マスク
+.TP
+.B CF_CLR_MASK
+バッファクリア
+.TP
+.B CF_CNT_MASK
+行数カウント
+.TP
+.B CF_GET_MASK
+フィールド取得
+.TP
+.B CF_ADD_MASK
+フィールド追加
+.TP
+.B CF_SPC_MASK
+空白除去
+.TP
+.B CF_HED_MASK
+HEAD コマンド
+.RE
+.LP
+.B nntp_copy_fields2
+関数はメッセージ ID
+.I message_id
+の記事のフィールドをヘッダ構造体
+.I hdr_ptr
+, フィールド数
+.I number
+に従って取得します。この際に取得動作を
+.I mask
+で指定します。
+フィールド処理マスクの意味は
+.I nntp_copy_field
+関数と同じです。
+.LP
+.B nntp_post
+関数はファイル名
+.I file_name
+の記事ファイルをドメイン名
+.I domain_name
+として投稿します。
+.LP
+.B nntp_noop
+関数は
+.B NNTP
+サーバとの接続をチェックします。NSPL モードの場合は何もしません。
+.LP
+.B nntp_description
+関数はニュースグループ名
+.I group_name
+の憲章を取得し、憲章取得バッファ
+.I description
+に格納します。
+.LP
+.B nntp_xover
+関数は
+.B NNTP
+サーバにグループ番号
+.I group
+,開始記事番号
+.I min
+, 終了記事番号
+.I max
+として XOVER コマンドを発行します。
+.LP
+.B confirm_article
+関数はニュースグループ名
+.I group_name
+のニュースグループの記事番号の最小,最大を取得し結果を
+.I min_ptr
+,
+.I max_ptr
+に格納します。
+.SH 戻り値
+.B confrim_article
+関数は戻り値を持ちませんが、他の関数は
+.B NNTP_ERR_CODE
+型のエラーコードを返します。
+.TP
+.B NNTP_OK
+正常終了
+.TP
+.B NNTP_ERR_RSV
+未サポート
+.TP
+.B NNTP_ERR_SERV
+サービス中止エラー
+.TP
+.B NNTP_ERR_COMM
+低レベル通信エラー
+.TP
+.B NNTP_ERR_PROT
+プロトコルエラー
+.TP
+.B NNTP_ERR_AUTH
+認証エラー
+.TP
+.B NNTP_ERR_PROG
+プログラムエラー
+.TP
+.B NNTP_ERR_MEM
+メモリ不足エラー
+.TP
+.B NNTP_ERR_FILE
+ファイルエラー
+.TP
+.B NNTP_ERR_NONE
+未存在エラー
+.SH バグ
+信頼性は保証できませんが、このライブラリを使用したプログラム
+で現在のところ特に支障は起きていません。

@@ -1,0 +1,23 @@
+#
+#  mnews 1.21 setup parameters for OnLine mode
+#
+add_cc_mode:		off
+add_lines_mode:		on
+article_format:		0
+ask_distrib_mode:	off
+auto_inc_folder:	INBOX
+auto_inc_mode:		on
+auto_sig_mode:		off
+cross_mark_mode:	on
+edit_code:		S
+group_mask:		on
+indicator:		> 
+jnames_file:		d:\home\jnames
+mime_format:		2
+msgchk_rule:		1
+pager_command:		d:\usr\local\bin\less.exe
+pop3_del_mode:		off
+pop3_mode:		on
+smtp_mode:		on
+sort_rule:		1
+xover_mode:		on

@@ -1,0 +1,66 @@
+
+SMTPLIB(3)		C LIBRARY FUNCTIONS			SMTPLIB(3)
+
+名前
+	smtplib		SMTP ライブラリ
+
+形式
+	#include	"smtplib.h"
+
+	SMTP_ERR_CODE	smtp_select_server(char *server_name)
+	SMTP_ERR_CODE	smtp_open(void)
+	SMTP_ERR_CODE	smtp_close(void)
+	SMTP_ERR_CODE	smtp_send(char *string)
+	SMTP_ERR_CODE	smtp_receive(char *ptr, int size)
+	SMTP_ERR_CODE	smtp_noop(void)
+	SMTP_ERR_CODE	smtp_mail(char *file_name, char *domain_name,
+	                char *user_name)
+	char		*get_real_adrs(char *str1, char *str2)
+
+機能説明
+	smtplib は SMTP 通信処理ルーチンを集めたライブラリです。
+	smtplib は MTAP (MTA(sendmail などの)パイプ起動)と SMTP (TCP/IP
+	通信)によるメールの送信の両方を同じインタフェースで提供しています。
+	これらはグローバル変数 smtp_connect_mode (0:MTAP,1:SMTP)で切替え
+	ます。
+
+	smtp_select_server 関数はマシン名 server_name のマシンに SMTP
+	サーバを切替えます。MTAP モードの場合は MTA が存在するかチェック
+	のみします。
+	smtp_open 関数は SMTP サーバと接続します。MTAP モードの場合は
+	MTA をパイプ起動します。
+	smtp_close 関数は SMTP サーバとの接続を切断します。MTAP モードの
+	場合は MTA のパイプを切断します。
+	smtp_send 関数は SMTP サーバに文字列 string を送信します。MTAP
+	モードの場合は MTA に文字列 string を送信します。
+	smtp_receive 関数は SMTP サーバからの応答を受信バッファ ptr に
+	最大サイズ size まで受信します。MTAP モードの場合はエラーと
+	なります。
+	smtp_noop 関数は SMTP サーバとの接続をチェックします。MTAP モード
+	の場合は何もしません。
+	smtp_mail 関数はファイル名 file_name のメール記事をドメイン名
+	domain_name, ユーザ名 user_name として SMTP サーバに送信します。
+	MTAP モードの場合は MTA へのパイプに送信します。
+	get_real_adrs 関数は文字列 str1 から実アドレスを取得して実アドレス
+	格納領域 str2 に格納します。
+
+戻り値
+	get_real_adrs 関数を除いて SMTP_ERR_CODE 型のエラーコードを返します。
+
+	SMTP_OK			正常終了
+	SMTP_ERR_RSV		未サポート
+	SMTP_ERR_BUSY		過負荷状態
+	SMTP_ERR_COMM		低レベル通信エラー
+	SMTP_ERR_PROT		プロトコルエラー
+	SMTP_ERR_AUTH		認証エラー
+	SMTP_ERR_PROG		プログラムエラー
+	SMTP_ERR_MEM		メモリ不足エラー
+	SMTP_ERR_FILE		ファイルエラー
+	SMTP_ERR_NONE		未存在エラー
+
+	get_real_adrs 関数はアドレスを取得し終った次の文字へのポインタを
+	返します。
+
+バグ
+	信頼性は保証できませんが、このライブラリを使用したプログラム
+	で現在のところ特に支障は起きていません。

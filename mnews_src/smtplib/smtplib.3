@@ -1,0 +1,175 @@
+.\" Copyright (c) 1996-1997 Matsusita Soft-Research, INC. Akira Takuma
+.TH SMTPLIB 3 "1997年09月13日"
+.SH 名前
+smtplib \- SMTP ライブラリ
+.SH 形式
+.B #include
+\fB"\fRsmtplib.h\fB"\fR
+.LP
+SMTP_ERR_CODE
+.B smtp_select_server
+(char*
+.I server_name
+)
+.LP
+SMTP_ERR_CODE
+.B smtp_open
+(void)
+.LP
+SMTP_ERR_CODE
+.B smtp_close
+(void)
+.LP
+SMTP_ERR_CODE
+.B smtp_send
+(char*
+.I string
+)
+.LP
+SMTP_ERR_CODE
+.B smtp_receive
+(char*
+.I ptr
+, int
+.I size
+)
+.LP
+SMTP_ERR_CODE
+.B smtp_noop
+(void)
+.LP
+SMTP_ERR_CODE
+.B smtp_mail
+(char*
+.I file_name
+, char*
+.I domain_name
+, char*
+.I user_name
+)
+.LP
+char*
+.B get_real_adrs
+(char*
+.I str1
+, char*
+.I str2
+)
+.SH 機能説明
+.B smtplib
+は
+.B SMTP
+通信処理ルーチンを集めたライブラリです。
+.B smtplib
+は MTAP (MTA (sendmail などの)パイプ起動)と SMTP (TCP/IP 通信)による
+メールの送信の両方を同じインタフェースで提供しています。これらは
+グローバル変数
+.B smtp_connect_mode
+(0:MTAP,1:SMTP)で切替えます。
+.LP
+.B smtp_select_server
+関数はマシン名
+.I server_name
+のマシンに
+.B SMTP
+サーバを切替えます。MTAP モードの場合は
+.B MTA
+が存在するかチェックのみします。
+.LP
+.B smtp_open
+関数は
+.B SMTP
+サーバと接続します。MTAP モードの場合は
+.B MTA
+をパイプ起動します。
+.LP
+.B smtp_close
+関数は
+.B SMTP
+サーバとの接続を切断します。MTAP モードの場合は
+.B MTA
+のパイプを切断します。
+.LP
+.B smtp_send
+関数は
+.B SMTP
+サーバに文字列
+.I string
+を送信します。MTAP モードの場合は
+.B MTA
+に文字列 string を送信します。
+.LP
+.B smtp_receive
+関数は
+.B SMTP
+サーバからの応答を受信バッファ
+.I ptr
+に最大サイズ
+.I size
+まで受信します。MTAP モードの場合はエラーとなります。
+.LP
+.B smtp_noop
+関数は
+.B SMTP
+サーバとの接続をチェックします。MTAP モードの場合は何もしません。
+.LP
+.B smtp_mail
+関数はファイル名
+.I file_name
+のメール記事をドメイン名
+.I domain_name
+, ユーザ名
+.I user_name
+として
+.B SMTP
+サーバに送信します。MTAP モードの場合は
+.B MTA
+へのパイプに送信します。
+.LP
+.B get_real_adrs
+関数は文字列
+.I str1
+から実アドレスを取得して実アドレス格納領域
+.I str2
+に格納します。
+.SH 戻り値
+.B get_real_adrs
+関数を除いて
+.B SMTP_ERR_CODE
+型のエラーコードを返します。
+.TP
+.B SMTP_OK
+正常終了
+.TP
+.B SMTP_ERR_RSV
+未サポート
+.TP
+.B SMTP_ERR_BUSY
+過負荷状態
+.TP
+.B SMTP_ERR_COMM
+低レベル通信エラー
+.TP
+.B SMTP_ERR_PROT
+プロトコルエラー
+.TP
+.B SMTP_ERR_AUTH
+認証エラー
+.TP
+.B SMTP_ERR_PROG
+プログラムエラー
+.TP
+.B SMTP_ERR_MEM
+メモリ不足エラー
+.TP
+.B SMTP_ERR_FILE
+ファイルエラー
+.TP
+.B SMTP_ERR_NONE
+未存在エラー
+.LP
+.B get_real_adrs
+関数はアドレスを取得し終った次の文字へのポインタを返します。
+.SH バグ
+信頼性は保証できませんが、このライブラリを使用したプログラム
+で現在のところ特に支障は起きていません。

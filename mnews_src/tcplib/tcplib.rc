@@ -1,0 +1,33 @@
+//===================================================================
+//
+//  tcplib.rc by A.Takuma
+//
+//===================================================================
+
+#include "Version.h"
+
+1 VERSIONINFO 
+FILEVERSION PRODUCT_VERSION
+PRODUCTVERSION PRODUCT_VERSION
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_DLL
+{
+ BLOCK "StringFileInfo"
+ {
+  BLOCK "040904E4"
+  {
+	VALUE "FileDescription", "TCP/IP communication library\000"
+	VALUE "FileVersion", FILE_VERSION
+	VALUE "InternalName", "TcpLib\000"
+	VALUE "OriginalFilename", "TcpLib.dll\000"
+  }
+
+ }
+
+ BLOCK "VarFileInfo"
+ {
+  VALUE "Translation", 0x409, 1252
+ }
+
+}
+
